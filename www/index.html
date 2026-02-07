@@ -6,38 +6,49 @@
   <title>ClawPurse &mdash; Local Timpi Wallet for OpenClaw</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: dark;
-      font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --bg: #05090f;
-      --fg: #f5f7fb;
-      --accent: #6cf3d3;
-      --muted: #8a96b3;
-      background: var(--bg);
+      --bg-deep: #050810;
+      --bg-surface: #0a0f1a;
+      --bg-elevated: #111827;
+      --coral-bright: #ff4d4d;
+      --coral-mid: #e63946;
+      --cyan-bright: #00e5cc;
+      --cyan-glow: rgba(0, 229, 204, 0.35);
+      --text-primary: #f0f4ff;
+      --text-secondary: #8892b0;
+      --border-subtle: rgba(136, 146, 176, 0.2);
+      --border-accent: rgba(255, 77, 77, 0.35);
+      --font-display: 'Space Grotesk', 'Clash Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+      background: var(--bg-deep);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
-      background: radial-gradient(circle at top, rgba(108,243,211,0.08), transparent 50%), var(--bg);
-      color: var(--fg);
+      font-family: var(--font-display);
+      background: radial-gradient(circle at 20% 20%, var(--cyan-glow), transparent 45%),
+                  radial-gradient(circle at 80% 0%, rgba(255,77,77,0.18), transparent 55%),
+                  var(--bg-deep);
+      color: var(--text-primary);
     }
     header {
       padding: 64px 24px 32px;
       text-align: center;
     }
     h1 { font-size: clamp(2.8rem, 6vw, 4rem); margin: 0 0 16px; }
-    p.lede { font-size: 1.2rem; color: var(--muted); margin: 0 auto; max-width: 640px; }
+    p.lede { font-size: 1.2rem; color: var(--text-secondary); margin: 0 auto; max-width: 640px; }
     main { padding: 0 24px 96px; max-width: 960px; margin: 0 auto; }
     section { margin-top: 56px; }
-    h2 { font-size: 1.6rem; margin-bottom: 12px; }
+    h2 { font-size: 1.6rem; margin-bottom: 12px; color: var(--coral-bright); }
     ul.features { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-    ul.features li { border: 1px solid rgba(108,243,211,0.25); border-radius: 16px; padding: 18px; background: rgba(4,8,14,0.85); }
-    ul.features h3 { margin: 0 0 6px; font-size: 1.1rem; color: var(--accent); }
-    code, pre { font-family: 'JetBrains Mono', 'Fira Code', monospace; background: rgba(255,255,255,0.04); border-radius: 8px; padding: 4px 6px; }
-    pre { padding: 18px; overflow-x: auto; }
+    ul.features li { border: 1px solid var(--border-subtle); border-radius: 16px; padding: 18px; background: var(--bg-elevated); box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
+    ul.features h3 { margin: 0 0 6px; font-size: 1.1rem; color: var(--cyan-bright); }
+    code, pre { font-family: var(--font-mono); background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 4px 6px; }
+    pre { padding: 18px; overflow-x: auto; background: var(--bg-elevated); }
     .cta {
       margin-top: 64px;
       display: flex;
@@ -52,13 +63,15 @@
       border-radius: 30px;
       text-decoration: none;
       font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .cta .primary { background: var(--accent); color: #041018; }
-    .cta .secondary { border: 1px solid rgba(255,255,255,0.35); color: var(--fg); }
+    .cta .primary { background: linear-gradient(135deg, var(--coral-bright), var(--coral-mid)); color: var(--bg-deep); box-shadow: 0 10px 30px rgba(255,77,77,0.35); }
+    .cta .secondary { border: 1px solid var(--border-subtle); color: var(--text-primary); background: transparent; }
+    .cta a:hover { transform: translateY(-2px); }
     footer {
       text-align: center;
       padding: 48px 24px 64px;
-      color: var(--muted);
+      color: var(--text-secondary);
       font-size: 0.9rem;
     }
     @media (max-width: 600px) {
