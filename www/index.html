@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClawPurse &mdash; Local Timpi Wallet for OpenClaw</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --bg: #05090f;
+      --fg: #f5f7fb;
+      --accent: #6cf3d3;
+      --muted: #8a96b3;
+      background: var(--bg);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, rgba(108,243,211,0.08), transparent 50%), var(--bg);
+      color: var(--fg);
+    }
+    header {
+      padding: 64px 24px 32px;
+      text-align: center;
+    }
+    h1 { font-size: clamp(2.8rem, 6vw, 4rem); margin: 0 0 16px; }
+    p.lede { font-size: 1.2rem; color: var(--muted); margin: 0 auto; max-width: 640px; }
+    main { padding: 0 24px 96px; max-width: 960px; margin: 0 auto; }
+    section { margin-top: 56px; }
+    h2 { font-size: 1.6rem; margin-bottom: 12px; }
+    ul.features { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    ul.features li { border: 1px solid rgba(108,243,211,0.25); border-radius: 16px; padding: 18px; background: rgba(4,8,14,0.85); }
+    ul.features h3 { margin: 0 0 6px; font-size: 1.1rem; color: var(--accent); }
+    code, pre { font-family: 'JetBrains Mono', 'Fira Code', monospace; background: rgba(255,255,255,0.04); border-radius: 8px; padding: 4px 6px; }
+    pre { padding: 18px; overflow-x: auto; }
+    .cta {
+      margin-top: 64px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .cta a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .cta .primary { background: var(--accent); color: #041018; }
+    .cta .secondary { border: 1px solid rgba(255,255,255,0.35); color: var(--fg); }
+    footer {
+      text-align: center;
+      padding: 48px 24px 64px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    @media (max-width: 600px) {
+      ul.features { grid-template-columns: 1fr; }
+      header { padding-top: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p>🪙 OpenClaw Wallet</p>
+    <h1>ClawPurse Beta</h1>
+    <p class="lede">
+      A local-only Timpi / NTMPI wallet for OpenClaw nodes. Generate, guard, and verify transactions with
+      encrypted keystores, destination allowlists, and auditable receipts &mdash; no third-party custody required.
+    </p>
+    <div class="cta">
+      <a class="primary" href="https://github.com/mhue-ai/ClawPurse" target="_blank" rel="noopener">View on GitHub</a>
+      <a class="secondary" href="../README.md" target="_blank" rel="noopener">Read the docs</a>
+    </div>
+  </header>
+  <main>
+    <section>
+      <h2>Key Features</h2>
+      <ul class="features">
+        <li>
+          <h3>Encrypted Keystore</h3>
+          <p>AES-256-GCM with scrypt key derivation keeps mnemonics locked to the local node.</p>
+        </li>
+        <li>
+          <h3>Guardrail Wizard</h3>
+          <p>Interactive setup for send limits, confirmation thresholds, and allowlist enforcement.</p>
+        </li>
+        <li>
+          <h3>Destination Allowlists</h3>
+          <p>Enforce or document trusted addresses with per-destination caps, memos, and notes.</p>
+        </li>
+        <li>
+          <h3>Transaction Receipts</h3>
+          <p>Every send is recorded locally with tx hash, block height, memo, and guardrail status.</p>
+        </li>
+        <li>
+          <h3>Programmatic API</h3>
+          <p>Import ClawPurse functions in agents or scripts for automated payouts and balance checks.</p>
+        </li>
+        <li>
+          <h3>OpenClaw Skill</h3>
+          <p>Drop-in SKILL.md lets other nodes install ClawPurse for trust-minimized payments.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>CLI Quick Start</h2>
+      <pre><code>npm install
+npm run build
+npm link
+
+clawpurse init --password &lt;pass&gt;
+clawpurse address
+clawpurse balance --password &lt;pass&gt;
+clawpurse send neutaro1... 1.25 --password &lt;pass&gt;
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Beta Release Notes</h2>
+      <p>Version 0.1.0 ships the full local wallet stack tested on the Neutaro chain:</p>
+      <ul>
+        <li>Real-funds send verified (Tx <code>79EC3BC17965A0987F4B7462C40B5FAC0889C5D3F9DD63C72B59571987E40F7D</code>, block 13835843).</li>
+        <li>Docs bundle: Operator Guide, Trust Model, Allowlist Reference, SKILL.md.</li>
+        <li>Guardrail CLI: <code>allowlist init/list/add/remove</code> with enforcement matrix.</li>
+        <li>Programmatic helpers for wallet generation, balance, send, allowlist management.</li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    Maintained by the Mhue family • Timpi / NTMPI wallet for OpenClaw • v0.1.0 beta
+  </footer>
+</body>
+</html>
