@@ -1,0 +1,384 @@
+#!/usr/bin/env node
+// ClawPurse CLI - Local Timpi/NTMPI wallet for OpenClaw nodes
+
+import { CLI_CONFIG, NEUTARO_CONFIG, KEYSTORE_CONFIG } from './config.js';
+import {
+  generateWallet,
+  saveKeystore,
+  loadKeystore,
+  keystoreExists,
+  getKeystoreAddress,
+  getDefaultKeystorePath,
+} from './keystore.js';
+import {
+  getBalance,
+  send,
+  getChainInfo,
+  formatAmount,
+  parseAmount,
+  generateReceiveAddress,
+} from './wallet.js';
+import { recordSendReceipt, getRecentReceipts, formatReceipt } from './receipts.js';
+
+// Simple argument parsing (no external deps for core CLI)
+const args = process.argv.slice(2);
+const command = args[0];
+
+function getArg(flag: string): string | undefined {
+  const idx = args.indexOf(flag);
+  if (idx !== -1 && args[idx + 1]) {
+    return args[idx + 1];
+  }
+  return undefined;
+}
+
+function hasFlag(flag: string): boolean {
+  return args.includes(flag);
+}
+
+async function promptPassword(prompt: string): Promise<string> {
+  // For now, use env var or argument - interactive prompt needs enquirer
+  const password = process.env.CLAWPURSE_PASSWORD || getArg('--password');
+  if (!password) {
+    console.error(`Error: Password required. Set CLAWPURSE_PASSWORD env var or use --password flag`);
+    process.exit(1);
+  }
+  return password;
+}
+
+function printHelp() {
+  console.log(`
+${CLI_CONFIG.name} v${CLI_CONFIG.version}
+${CLI_CONFIG.description}
+
+USAGE:
+  clawpurse <command> [options]
+
+COMMANDS:
+  init                  Create a new wallet
+  import                Import existing wallet from mnemonic
+  balance               Check wallet balance
+  send <to> <amount>    Send tokens (amount in ${NEUTARO_CONFIG.displayDenom})
+  receive               Show receive address
+  history               Show transaction history
+  status                Check chain connection status
+  address               Show wallet address
+  export                Export mnemonic (DANGEROUS)
+
+OPTIONS:
+  --password <pass>     Wallet password (or set CLAWPURSE_PASSWORD)
+  --keystore <path>     Custom keystore path
+  --memo <text>         Transaction memo
+  --yes                 Skip confirmations
+  --help                Show this help
+
+SAFETY:
+  Max send: ${formatAmount(BigInt(KEYSTORE_CONFIG.maxSendAmount))}
+  Confirm above: ${formatAmount(BigInt(KEYSTORE_CONFIG.requireConfirmAbove))}
+
+EXAMPLES:
+  clawpurse init --password mypass
+  clawpurse balance --password mypass
+  clawpurse send neutaro1abc... 10.5 --password mypass
+  clawpurse receive
+`);
+}
+
+async function initCommand() {
+  const keystorePath = getArg('--keystore');
+  
+  if (await keystoreExists(keystorePath)) {
+    console.error('Error: Wallet already exists. Use a different --keystore path or delete the existing one.');
+    process.exit(1);
+  }
+  
+  const password = await promptPassword('Enter password for new wallet: ');
+  
+  if (password.length < 8) {
+    console.error('Error: Password must be at least 8 characters');
+    process.exit(1);
+  }
+  
+  console.log('Generating new wallet...');
+  const { mnemonic, address } = await generateWallet();
+  
+  console.log('Encrypting and saving keystore...');
+  const savedPath = await saveKeystore(mnemonic, address, password, keystorePath);
+  
+  console.log(`
+╔══════════════════════════════════════════════════════════════════╗
+║                    WALLET CREATED SUCCESSFULLY                   ║
+╠══════════════════════════════════════════════════════════════════╣
+║ Address: ${address.padEnd(54)}║
+║ Keystore: ${savedPath.slice(-52).padEnd(53)}║
+╠══════════════════════════════════════════════════════════════════╣
+║ ⚠️  BACKUP YOUR MNEMONIC - THIS IS THE ONLY TIME IT'S SHOWN ⚠️   ║
+╠══════════════════════════════════════════════════════════════════╣
+`);
+  
+  // Display mnemonic in a formatted way
+  const words = mnemonic.split(' ');
+  for (let i = 0; i < words.length; i += 4) {
+    const line = words.slice(i, i + 4).map((w, j) => `${(i + j + 1).toString().padStart(2)}. ${w.padEnd(12)}`).join(' ');
+    console.log(`║ ${line.padEnd(63)}║`);
+  }
+  
+  console.log(`╚══════════════════════════════════════════════════════════════════╝`);
+}
+
+async function importCommand() {
+  const keystorePath = getArg('--keystore');
+  
+  if (await keystoreExists(keystorePath)) {
+    console.error('Error: Wallet already exists at this path.');
+    process.exit(1);
+  }
+  
+  const mnemonic = getArg('--mnemonic') || process.env.CLAWPURSE_MNEMONIC;
+  if (!mnemonic) {
+    console.error('Error: Mnemonic required. Use --mnemonic or set CLAWPURSE_MNEMONIC');
+    process.exit(1);
+  }
+  
+  const password = await promptPassword('Enter password: ');
+  
+  console.log('Importing wallet...');
+  const { walletFromMnemonic } = await import('./keystore.js');
+  const { address } = await walletFromMnemonic(mnemonic);
+  
+  const savedPath = await saveKeystore(mnemonic, address, password, keystorePath);
+  
+  console.log(`Wallet imported successfully!`);
+  console.log(`Address: ${address}`);
+  console.log(`Keystore: ${savedPath}`);
+}
+
+async function balanceCommand() {
+  const keystorePath = getArg('--keystore');
+  let address: string | undefined = getArg('--address');
+  
+  if (!address) {
+    const storedAddr = await getKeystoreAddress(keystorePath);
+    if (!storedAddr) {
+      console.error('Error: No wallet found. Run "clawpurse init" first or specify --address');
+      process.exit(1);
+    }
+    address = storedAddr;
+  }
+  
+  console.log(`Fetching balance for ${address}...`);
+  
+  try {
+    const result = await getBalance(address);
+    console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                       WALLET BALANCE                         ║
+╠══════════════════════════════════════════════════════════════╣
+║ Address: ${result.address.slice(0, 52).padEnd(52)}║
+║ Balance: ${result.primary.displayAmount.padEnd(52)} ${result.primary.displayDenom.padEnd(0)}║
+╚══════════════════════════════════════════════════════════════╝
+`);
+    
+    if (result.balances.length > 1) {
+      console.log('Other balances:');
+      result.balances.filter(b => b.denom !== NEUTARO_CONFIG.denom).forEach(b => {
+        console.log(`  ${b.amount} ${b.denom}`);
+      });
+    }
+  } catch (error) {
+    console.error(`Error fetching balance: ${error instanceof Error ? error.message : error}`);
+    process.exit(1);
+  }
+}
+
+async function sendCommand() {
+  const keystorePath = getArg('--keystore');
+  const password = await promptPassword('Enter password: ');
+  
+  // Find to address and amount (positional after 'send')
+  const sendIdx = args.indexOf('send');
+  const toAddress = args[sendIdx + 1];
+  const amount = args[sendIdx + 2];
+  
+  if (!toAddress || !amount) {
+    console.error('Usage: clawpurse send <to_address> <amount>');
+    process.exit(1);
+  }
+  
+  const memo = getArg('--memo');
+  const skipConfirmation = hasFlag('--yes');
+  
+  console.log('Loading wallet...');
+  const { wallet, address } = await loadKeystore(password, keystorePath);
+  
+  console.log(`Sending ${amount} ${NEUTARO_CONFIG.displayDenom} to ${toAddress}...`);
+  
+  try {
+    const result = await send(wallet, address, toAddress, amount, {
+      memo,
+      skipConfirmation,
+    });
+    
+    // Record receipt
+    const receipt = await recordSendReceipt(
+      result,
+      address,
+      toAddress,
+      parseAmount(amount).toString(),
+      memo
+    );
+    
+    console.log(`\nTransaction successful!`);
+    console.log(formatReceipt(receipt));
+  } catch (error) {
+    console.error(`Error: ${error instanceof Error ? error.message : error}`);
+    process.exit(1);
+  }
+}
+
+async function receiveCommand() {
+  const keystorePath = getArg('--keystore');
+  const address = await getKeystoreAddress(keystorePath);
+  
+  if (!address) {
+    console.error('Error: No wallet found. Run "clawpurse init" first');
+    process.exit(1);
+  }
+  
+  const { displayText, qrData } = generateReceiveAddress(address);
+  
+  console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                     RECEIVE ${NEUTARO_CONFIG.displayDenom.padEnd(36)}║
+╠══════════════════════════════════════════════════════════════╣
+║ ${displayText.split('\n')[0].padEnd(61)}║
+║ ${address.padEnd(61)}║
+╠══════════════════════════════════════════════════════════════╣
+║ QR Data: ${qrData.padEnd(52)}║
+╚══════════════════════════════════════════════════════════════╝
+`);
+}
+
+async function historyCommand() {
+  const limit = parseInt(getArg('--limit') || '10');
+  const receipts = await getRecentReceipts(limit);
+  
+  if (receipts.length === 0) {
+    console.log('No transaction history yet.');
+    return;
+  }
+  
+  console.log(`\nRecent transactions (${receipts.length}):\n`);
+  
+  for (const receipt of receipts) {
+    const direction = receipt.type === 'send' ? '→' : '←';
+    const target = receipt.type === 'send' ? receipt.toAddress : receipt.fromAddress;
+    console.log(`${receipt.timestamp.slice(0, 10)} ${direction} ${receipt.displayAmount.padEnd(20)} ${target.slice(0, 20)}... [${receipt.status}]`);
+  }
+}
+
+async function statusCommand() {
+  console.log('Checking chain connection...');
+  
+  const info = await getChainInfo();
+  
+  if (info.connected) {
+    console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                      CHAIN STATUS                            ║
+╠══════════════════════════════════════════════════════════════╣
+║ Status: 🟢 CONNECTED                                         ║
+║ Chain ID: ${info.chainId.padEnd(51)}║
+║ Block Height: ${info.height.toString().padEnd(47)}║
+║ RPC: ${NEUTARO_CONFIG.rpcEndpoint.padEnd(56)}║
+╚══════════════════════════════════════════════════════════════╝
+`);
+  } else {
+    console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                      CHAIN STATUS                            ║
+╠══════════════════════════════════════════════════════════════╣
+║ Status: 🔴 DISCONNECTED                                      ║
+║ RPC: ${NEUTARO_CONFIG.rpcEndpoint.padEnd(56)}║
+╚══════════════════════════════════════════════════════════════╝
+`);
+    process.exit(1);
+  }
+}
+
+async function addressCommand() {
+  const keystorePath = getArg('--keystore');
+  const address = await getKeystoreAddress(keystorePath);
+  
+  if (!address) {
+    console.error('Error: No wallet found. Run "clawpurse init" first');
+    process.exit(1);
+  }
+  
+  console.log(address);
+}
+
+async function exportCommand() {
+  if (!hasFlag('--yes')) {
+    console.error('⚠️  WARNING: This will display your mnemonic in plaintext!');
+    console.error('Run with --yes flag to confirm you understand the risk.');
+    process.exit(1);
+  }
+  
+  const keystorePath = getArg('--keystore');
+  const password = await promptPassword('Enter password: ');
+  
+  const { mnemonic, address } = await loadKeystore(password, keystorePath);
+  
+  console.log(`\nAddress: ${address}`);
+  console.log(`Mnemonic:\n${mnemonic}\n`);
+}
+
+// Main
+async function main() {
+  if (!command || command === '--help' || command === '-h') {
+    printHelp();
+    process.exit(0);
+  }
+  
+  try {
+    switch (command) {
+      case 'init':
+        await initCommand();
+        break;
+      case 'import':
+        await importCommand();
+        break;
+      case 'balance':
+        await balanceCommand();
+        break;
+      case 'send':
+        await sendCommand();
+        break;
+      case 'receive':
+        await receiveCommand();
+        break;
+      case 'history':
+        await historyCommand();
+        break;
+      case 'status':
+        await statusCommand();
+        break;
+      case 'address':
+        await addressCommand();
+        break;
+      case 'export':
+        await exportCommand();
+        break;
+      default:
+        console.error(`Unknown command: ${command}`);
+        printHelp();
+        process.exit(1);
+    }
+  } catch (error) {
+    console.error(`Error: ${error instanceof Error ? error.message : error}`);
+    process.exit(1);
+  }
+}
+
+main();
