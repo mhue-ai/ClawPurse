@@ -47,6 +47,12 @@
     ul.features { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
     ul.features li { border: 1px solid var(--border-subtle); border-radius: 16px; padding: 18px; background: var(--bg-elevated); box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
     ul.features h3 { margin: 0 0 6px; font-size: 1.1rem; color: var(--cyan-bright); }
+    .timpi-grid { display: flex; flex-wrap: wrap; gap: 24px; }
+    .info-card { flex: 1 1 320px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 18px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+    .info-card h3 { margin-top: 0; color: var(--cyan-bright); }
+    .info-card ul { padding-left: 18px; margin: 0 0 12px; color: var(--text-secondary); }
+    .info-card li { margin-bottom: 6px; }
+    .tag { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; letter-spacing: 0.03em; background: rgba(0,229,204,0.1); color: var(--cyan-bright); margin-bottom: 12px; }
     code, pre { font-family: var(--font-mono); background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 4px 6px; }
     pre { padding: 18px; overflow-x: auto; background: var(--bg-elevated); }
     .cta {
@@ -123,6 +129,42 @@
           <p>Drop-in SKILL.md lets other nodes install ClawPurse for trust-minimized payments.</p>
         </li>
       </ul>
+    </section>
+
+    <section>
+      <h2>Powered by Timpi</h2>
+      <p style="color: var(--text-secondary); max-width: 760px;">
+        ClawPurse is the wallet companion to <a href="https://timpi.io" target="_blank" rel="noopener" style="color: var(--cyan-bright); text-decoration: none;">Timpi</a>&rsquo;s independent search network.
+        Timpi rewires how data is indexed and shared by combining privacy-first search, an open Data API, and DePIN nodes that reward families like ours for running the TAP network.
+      </p>
+      <div class="timpi-grid">
+        <div class="info-card">
+          <div class="tag">Timpi stack</div>
+          <h3>Search, Data, DePIN</h3>
+          <ul>
+            <li><strong>Search Engine:</strong> censorship-resistant results with no profiling or tracking.</li>
+            <li><strong>Data API:</strong> direct programmatic access to the world&rsquo;s decentralized index.</li>
+            <li><strong>DePIN nodes:</strong> Collectors, Guardians, and GeoCores that earn NTMPI for feeding the index.</li>
+          </ul>
+          <p style="margin:0; color: var(--text-secondary);">Learn how to join the movement at <a href="https://timpi.io" target="_blank" rel="noopener" style="color: var(--cyan-bright);">timpi.io</a>.</p>
+        </div>
+        <div class="info-card">
+          <div class="tag">Where to get TIMPI / NTMPI</div>
+          <h3>MEXC Spot Pair</h3>
+          <ol style="padding-left: 18px; color: var(--text-secondary);">
+            <li>Sign in to MEXC and deposit USDT (TRC-20 or BEP-20 is fastest).</li>
+            <li>Open the <a href="https://www.mexc.com/exchange/NTMPI_USDT" target="_blank" rel="noopener" style="color: var(--cyan-bright);">NTMPI/USDT</a> spot market.</li>
+            <li>Place a limit or market order, then withdraw to your Neutaro / ClawPurse address.</li>
+          </ol>
+          <h3 style="margin-top:24px;">Gravity Bridge &rarr; Osmosis</h3>
+          <ol style="padding-left: 18px; color: var(--text-secondary);">
+            <li>Bridge USDC/USDT from Ethereum using <a href="https://gravitypulse.app/" target="_blank" rel="noopener" style="color: var(--cyan-bright);">Gravity Pulse</a> or <a href="https://bridge.blockscape.network/#/" target="_blank" rel="noopener" style="color: var(--cyan-bright);">Blockscape</a>.</li>
+            <li>IBC-hop the bridged stablecoin to Osmosis via Keplr or Leap.</li>
+            <li>Swap for NTMPI on Osmosis, then IBC the funds to Neutaro and import them into ClawPurse.</li>
+          </ol>
+          <p style="margin:0; color: var(--text-secondary);">Need the detailed playbook? See <a href="https://github.com/mhue-ai/ClawPurse/blob/main/HOWTOGETTIMPI.md" target="_blank" rel="noopener" style="color: var(--cyan-bright);">HOWTOGETTIMPI.md</a>.</p>
+        </div>
+      </div>
     </section>
 
     <section>
