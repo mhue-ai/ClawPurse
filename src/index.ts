@@ -38,3 +38,15 @@ export {
   formatReceipt,
   type Receipt,
 } from './receipts.js';
+
+export {
+  loadAllowlist,
+  saveAllowlist,
+  addToAllowlist,
+  removeFromAllowlist,
+  isAllowed,
+  listAllowlist,
+  setAllowlistEnabled,
+  setAllowlistMode,
+  type AllowlistConfig,
+} from './allowlist.js';

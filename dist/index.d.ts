@@ -2,4 +2,5 @@ export { NEUTARO_CONFIG, KEYSTORE_CONFIG, CLI_CONFIG } from './config.js';
 export { generateWallet, walletFromMnemonic, saveKeystore, loadKeystore, keystoreExists, getKeystoreAddress, getDefaultKeystorePath, type KeystoreData, type DecryptedWallet, } from './keystore.js';
 export { getBalance, send, getChainInfo, formatAmount, parseAmount, generateReceiveAddress, getClient, getSigningClient, estimateGas, type BalanceResult, type SendResult, type SendOptions, } from './wallet.js';
 export { loadReceipts, recordSendReceipt, getRecentReceipts, getReceiptByTxHash, formatReceipt, type Receipt, } from './receipts.js';
+export { loadAllowlist, saveAllowlist, addToAllowlist, removeFromAllowlist, isAllowed, listAllowlist, setAllowlistEnabled, setAllowlistMode, type AllowlistConfig, } from './allowlist.js';
 //# sourceMappingURL=index.d.ts.map
