@@ -8,7 +8,7 @@ How to run ClawPurse safely and how other nodes can trust your transactions.
 cd ClawPurse
 npm install
 npm run build
-npm link   # makes 'clawpurse' available globally
+npm link  # makes 'clawpurse' available globally
 ```
 
 ## First-Time Wallet Setup
@@ -80,46 +80,27 @@ Every send creates a local receipt in `~/.clawpurse/receipts.json`:
 
 ## Verifying Transactions (For Other Nodes)
 
-If another node sends you NTMPI via ClawPurse, verify the transaction:
-
-### 1. Get the tx hash from the sender
-They should provide the `txHash` from their receipt.
-
-### 2. Query the chain directly
-```bash
-curl "https://api2.neutaro.io/cosmos/tx/v1beta1/txs/<TX_HASH>"
-```
-
-### 3. Confirm these match:
-- `fromAddress` matches sender's known wallet
-- `toAddress` matches your wallet  
-- `amount` matches agreed amount
-- Transaction is in a finalized block
-
-### 4. Optional: Check sender's receipt
-Ask for their `receipts.json` entry and compare against chain data.
+1. Ask the sender for the tx hash or receipt.
+2. Query the chain:
+   ```bash
+   curl "https://api2.neutaro.io/cosmos/tx/v1beta1/txs/<TX_HASH>"
+   ```
+3. Confirm `from`, `to`, amount, and memo match what you expect.
+4. Optional: compare against the sender's receipt entry.
 
 ## Security Checklist
 
 - [ ] Keystore file (`~/.clawpurse/keystore.enc`) has mode 0600
-- [ ] Mnemonic backed up offline (paper, hardware wallet)
-- [ ] Password is strong (12+ chars, not reused)
+- [ ] Mnemonic backed up offline
+- [ ] Password is strong (12+ chars)
 - [ ] `receipts.json` backed up for audit trail
-- [ ] Safety limits set appropriately for your use case
+- [ ] Safety limits set for your risk tolerance
 
 ## Troubleshooting
 
-**"Chain disconnected"**  
-→ Check internet connection; try alternate RPC in `src/config.ts`
-
-**"Amount exceeds safety limit"**  
-→ Adjust `maxSendAmount` in config or split into smaller sends
-
-**"Invalid address prefix"**  
-→ Neutaro addresses start with `neutaro1...`
-
-**Forgot password**  
-→ Cannot recover keystore. Restore from mnemonic:
-```bash
-clawpurse import --mnemonic "your 24 words..." --password <new-password>
-```
+| Issue | Fix |
+|-------|-----|
+| `Status: DISCONNECTED` | Check internet or swap RPC URL in `src/config.ts` |
+| "Amount exceeds safety limit" | Adjust config or send smaller amount |
+| "Invalid address prefix" | Neutaro addresses start with `neutaro1` |
+| Forgot password | Re-import using mnemonic: `clawpurse import --mnemonic "..." --password <new>` |
