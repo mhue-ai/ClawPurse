@@ -48,8 +48,9 @@ ClawPurse includes built-in safety limits:
 |---------|---------|---------|
 | `maxSendAmount` | 1000 NTMPI | Hard cap per transaction |
 | `requireConfirmAbove` | 100 NTMPI | Requires `--yes` flag above this |
+| Allowlist mode | Prompt during `init` | Enforce or allow unknown destinations |
 
-To adjust, edit `src/config.ts` and rebuild:
+To adjust core limits, edit `src/config.ts` and rebuild:
 
 ```typescript
 export const KEYSTORE_CONFIG = {
@@ -76,6 +77,22 @@ Every send creates a local receipt in `~/.clawpurse/receipts.json`:
   "timestamp": "2026-02-07T12:00:00.000Z",
   "status": "confirmed"
 }
+```
+
+## Allowlist CLI
+
+```
+# Run the guardrail wizard again (choose enforce or allow)
+clawpurse allowlist init [--mode enforce|allow]
+
+# Show default policy + entries
+clawpurse allowlist list
+
+# Add/update an entry with an optional cap and memo requirement
+clawpurse allowlist add <addr> --name "Treasury" --max 1000 --memo-required
+
+# Remove an entry
+clawpurse allowlist remove <addr>
 ```
 
 ## Verifying Transactions (For Other Nodes)

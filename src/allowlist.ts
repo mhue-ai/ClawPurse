@@ -41,6 +41,23 @@ export async function loadAllowlist(configPath?: string): Promise<AllowlistConfi
   }
 }
 
+export async function saveAllowlist(config: AllowlistConfig, configPath?: string): Promise<string> {
+  const filePath = configPath || defaultAllowlistPath;
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, JSON.stringify(config, null, 2), { mode: 0o600 });
+  return filePath;
+}
+
+export async function allowlistExists(configPath?: string): Promise<boolean> {
+  const filePath = configPath || defaultAllowlistPath;
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function amountToMicro(amount: number): bigint {
   return BigInt(Math.round(amount * 10 ** NEUTARO_CONFIG.decimals));
 }
@@ -49,6 +66,7 @@ export interface AllowlistCheckResult {
   allowed: boolean;
   requireMemo?: boolean;
   reason?: string;
+  destination?: AllowlistDestination;
 }
 
 export function evaluateAllowlist(
@@ -81,9 +99,10 @@ export function evaluateAllowlist(
     return {
       allowed: true,
       requireMemo: entry.needsMemo,
+      destination: entry,
     };
   }
-
+  
   // Not in allowlist
   const policy = config.defaultPolicy;
 

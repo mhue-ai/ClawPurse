@@ -6,7 +6,7 @@ Local Timpi/NTMPI wallet for OpenClaw nodes on the Neutaro chain.
 
 - 🔐 **Encrypted local keystore** - Keys never leave your machine
 - 💰 **Send/receive NTMPI** - Full wallet functionality
-- 🛡️ **Safety rails** - Configurable limits and confirmations
+- 🛡️ **Safety rails** - Configurable limits, confirmations, and destination allowlists
 - 📝 **Transaction receipts** - Local audit trail
 - 🔌 **Programmatic API** - Import and use in scripts
 
@@ -22,7 +22,7 @@ npm link  # Makes 'clawpurse' available globally
 ## Quick Start
 
 ```bash
-# Create a new wallet
+# Create a new wallet (you'll be prompted to choose guardrails)
 clawpurse init --password <your-password>
 
 # Check chain status
@@ -41,12 +41,21 @@ clawpurse receive
 clawpurse send <to-address> <amount> --password <your-password>
 ```
 
+## Guardrail wizard
+
+During `clawpurse init` (and `import`), the CLI pauses to explain the destination allowlist guardrail and asks you to choose:
+
+- **Enforce** – blocks sends to unknown addresses unless you pass `--override-allowlist`
+- **Allow** – lets you send anywhere, but still keeps the allowlist file for documentation
+
+You can pre-set the choice with `--allowlist-mode enforce|allow` or rerun the wizard at any time via `clawpurse allowlist init`.
+
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `init` | Create a new wallet |
-| `import` | Import wallet from mnemonic |
+| `init` | Create a new wallet (runs guardrail wizard) |
+| `import` | Import wallet from mnemonic (runs guardrail wizard) |
 | `balance` | Check wallet balance |
 | `send <to> <amount>` | Send NTMPI tokens |
 | `receive` | Show receive address |
@@ -54,6 +63,10 @@ clawpurse send <to-address> <amount> --password <your-password>
 | `status` | Check chain connection |
 | `address` | Display wallet address |
 | `export --yes` | Export mnemonic (dangerous) |
+| `allowlist init` | Re-run guardrail wizard / create config |
+| `allowlist list` | Show current destinations + default policy |
+| `allowlist add <addr>` | Add/update a destination |
+| `allowlist remove <addr>` | Remove a destination |
 
 ## Options
 
@@ -61,7 +74,8 @@ clawpurse send <to-address> <amount> --password <your-password>
 - `--keystore <path>` - Custom keystore location (default: `~/.clawpurse/keystore.enc`)
 - `--memo <text>` - Add memo to transaction
 - `--yes` - Skip confirmations
-- `--allowlist <path>` - Use custom allowlist file (default `~/.clawpurse/allowlist.json`)
+- `--allowlist <path>` / `--allowlist-file <path>` - Use custom allowlist file (default `~/.clawpurse/allowlist.json`)
+- `--allowlist-mode <enforce|allow>` - Skip the guardrail prompt during init/import
 - `--override-allowlist` - Bypass allowlist checks (one-time)
 
 ## Safety Features

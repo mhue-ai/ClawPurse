@@ -48,12 +48,28 @@ Force every outbound transfer to pass through a policy file so:
 3. If listed but amount > `maxAmount` → require `--yes` regardless of `requireConfirmAbove`
 4. If `needsMemo` true but no memo supplied → reject or prompt
 
+## Managing via CLI
+
+```
+# Rerun wizard / create default file
+clawpurse allowlist init [--mode enforce|allow]
+
+# Show current settings
+clawpurse allowlist list
+
+# Add or update a destination
+clawpurse allowlist add <neutaro-address> --name "Payroll" --max 250 --memo-required
+
+# Remove a destination
+clawpurse allowlist remove <neutaro-address>
+```
+
 ## Roadmap
 
 - [x] Document desired behavior (this file)
-- [ ] Implement parser + validator (zod schema)
-- [ ] Integrate into CLI send flow
-- [ ] Add `clawpurse allowlist list|add|remove` helper commands
+- [x] Implement parser + validator (zod schema)
+- [x] Integrate into CLI send flow + wizard
+- [x] Add `clawpurse allowlist list|add|remove` helper commands
 - [ ] Optional: auto-sync allowlist via git or shared Drive
 
 ## Interim Recommendation
