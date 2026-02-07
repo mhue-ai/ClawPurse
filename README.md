@@ -61,6 +61,8 @@ clawpurse send <to-address> <amount> --password <your-password>
 - `--keystore <path>` - Custom keystore location (default: `~/.clawpurse/keystore.enc`)
 - `--memo <text>` - Add memo to transaction
 - `--yes` - Skip confirmations
+- `--allowlist <path>` - Use custom allowlist file (default `~/.clawpurse/allowlist.json`)
+- `--override-allowlist` - Bypass allowlist checks (one-time)
 
 ## Safety Features
 
@@ -68,6 +70,7 @@ clawpurse send <to-address> <amount> --password <your-password>
 - **Confirmation required**: Above 100 NTMPI
 - **Address validation**: Verifies `neutaro` prefix
 - **Encrypted storage**: AES-256-GCM with scrypt key derivation
+- **Destination allowlist** (optional): Drop an `allowlist.json` in `~/.clawpurse/` to limit who can receive funds (see `docs/ALLOWLIST.md`)
 
 ## Programmatic Usage
 

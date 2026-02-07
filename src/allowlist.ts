@@ -1,117 +1,123 @@
-// Address allowlist for trusted senders/recipients
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as os from 'os';
+import { z } from 'zod';
+import { NEUTARO_CONFIG } from './config.js';
 
-export interface AllowlistConfig {
-  enabled: boolean;
-  mode: 'send' | 'receive' | 'both';
-  addresses: string[];
-  labels: Record<string, string>; // address -> human-readable label
-}
+const defaultAllowlistPath = path.join(os.homedir(), '.clawpurse', 'allowlist.json');
 
-const DEFAULT_CONFIG: AllowlistConfig = {
-  enabled: false,
-  mode: 'both',
-  addresses: [],
-  labels: {},
-};
+const DestinationSchema = z.object({
+  name: z.string().optional(),
+  address: z.string(),
+  maxAmount: z.number().nonnegative().optional(),
+  needsMemo: z.boolean().optional(),
+  notes: z.string().optional(),
+});
 
-function getAllowlistPath(): string {
-  return path.join(os.homedir(), '.clawpurse', 'allowlist.json');
-}
+const PolicySchema = z.object({
+  maxAmount: z.number().nonnegative().nullable().optional(),
+  requireMemo: z.boolean().optional(),
+  blockUnknown: z.boolean().optional(),
+});
 
-export async function loadAllowlist(): Promise<AllowlistConfig> {
+const AllowlistSchema = z.object({
+  defaultPolicy: PolicySchema.optional(),
+  destinations: DestinationSchema.array().default([]),
+});
+
+export type AllowlistConfig = z.infer<typeof AllowlistSchema>;
+export type AllowlistDestination = z.infer<typeof DestinationSchema>;
+
+export async function loadAllowlist(configPath?: string): Promise<AllowlistConfig | null> {
+  const filePath = configPath || defaultAllowlistPath;
   try {
-    const data = await fs.readFile(getAllowlistPath(), 'utf8');
-    return { ...DEFAULT_CONFIG, ...JSON.parse(data) };
-  } catch {
-    return DEFAULT_CONFIG;
+    const data = await fs.readFile(filePath, 'utf8');
+    return AllowlistSchema.parse(JSON.parse(data));
+  } catch (error: any) {
+    if (error?.code === 'ENOENT') {
+      return null;
+    }
+    throw new Error(`Failed to parse allowlist: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 
-export async function saveAllowlist(config: AllowlistConfig): Promise<void> {
-  const filePath = getAllowlistPath();
-  await fs.mkdir(path.dirname(filePath), { recursive: true });
-  await fs.writeFile(filePath, JSON.stringify(config, null, 2));
+function amountToMicro(amount: number): bigint {
+  return BigInt(Math.round(amount * 10 ** NEUTARO_CONFIG.decimals));
 }
 
-export async function addToAllowlist(
-  address: string,
-  label?: string
-): Promise<void> {
-  const config = await loadAllowlist();
-  
-  if (!config.addresses.includes(address)) {
-    config.addresses.push(address);
-  }
-  
-  if (label) {
-    config.labels[address] = label;
-  }
-  
-  await saveAllowlist(config);
+export interface AllowlistCheckResult {
+  allowed: boolean;
+  requireMemo?: boolean;
+  reason?: string;
 }
 
-export async function removeFromAllowlist(address: string): Promise<boolean> {
-  const config = await loadAllowlist();
-  const index = config.addresses.indexOf(address);
-  
-  if (index === -1) {
-    return false;
-  }
-  
-  config.addresses.splice(index, 1);
-  delete config.labels[address];
-  await saveAllowlist(config);
-  return true;
-}
+export function evaluateAllowlist(
+  config: AllowlistConfig,
+  toAddress: string,
+  amountMicro: bigint,
+  memo?: string
+): AllowlistCheckResult {
+  const normalizedAddress = toAddress.trim();
+  const entry = config.destinations.find((d) => d.address === normalizedAddress);
 
-export async function isAllowed(
-  address: string,
-  operation: 'send' | 'receive'
-): Promise<{ allowed: boolean; reason?: string }> {
-  const config = await loadAllowlist();
-  
-  // If allowlist is disabled, everything is allowed
-  if (!config.enabled) {
+  if (entry) {
+    if (entry.maxAmount !== undefined) {
+      const limitMicro = amountToMicro(entry.maxAmount);
+      if (amountMicro > limitMicro) {
+        return {
+          allowed: false,
+          reason: `Amount exceeds ${entry.maxAmount} ${NEUTARO_CONFIG.displayDenom} cap for ${entry.name || entry.address}`,
+        };
+      }
+    }
+
+    if (entry.needsMemo && !memo) {
+      return {
+        allowed: false,
+        reason: `Destination ${entry.name || entry.address} requires a memo`,
+      };
+    }
+
+    return {
+      allowed: true,
+      requireMemo: entry.needsMemo,
+    };
+  }
+
+  // Not in allowlist
+  const policy = config.defaultPolicy;
+
+  if (!policy) {
     return { allowed: true };
   }
-  
-  // Check if operation type matches
-  if (config.mode !== 'both' && config.mode !== operation) {
-    return { allowed: true }; // Allowlist doesn't apply to this operation
+
+  if (policy.blockUnknown) {
+    return {
+      allowed: false,
+      reason: 'Destination is not in allowlist (blockUnknown=true)',
+    };
   }
-  
-  // Check if address is in allowlist
-  if (config.addresses.includes(address)) {
-    return { allowed: true };
+
+  if (policy.maxAmount !== undefined && policy.maxAmount !== null) {
+    const limitMicro = amountToMicro(policy.maxAmount);
+    if (amountMicro > limitMicro) {
+      return {
+        allowed: false,
+        reason: `Amount exceeds defaultPolicy maxAmount (${policy.maxAmount} ${NEUTARO_CONFIG.displayDenom})`,
+      };
+    }
   }
-  
-  const label = config.labels[address];
-  return {
-    allowed: false,
-    reason: `Address ${address}${label ? ` (${label})` : ''} is not in the allowlist. ` +
-            `Add it with: clawpurse allowlist add ${address}`,
-  };
+
+  if (policy.requireMemo && !memo) {
+    return {
+      allowed: false,
+      reason: 'Default policy requires memo for unknown destinations',
+    };
+  }
+
+  return { allowed: true, requireMemo: policy.requireMemo };
 }
 
-export async function listAllowlist(): Promise<Array<{ address: string; label?: string }>> {
-  const config = await loadAllowlist();
-  return config.addresses.map(address => ({
-    address,
-    label: config.labels[address],
-  }));
-}
-
-export async function setAllowlistEnabled(enabled: boolean): Promise<void> {
-  const config = await loadAllowlist();
-  config.enabled = enabled;
-  await saveAllowlist(config);
-}
-
-export async function setAllowlistMode(mode: 'send' | 'receive' | 'both'): Promise<void> {
-  const config = await loadAllowlist();
-  config.mode = mode;
-  await saveAllowlist(config);
+export function getAllowlistPath(): string {
+  return defaultAllowlistPath;
 }

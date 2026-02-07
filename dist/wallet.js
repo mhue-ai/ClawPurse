@@ -1,7 +1,6 @@
 // Wallet operations for Neutaro chain
 import { SigningStargateClient, StargateClient, GasPrice } from '@cosmjs/stargate';
 import { NEUTARO_CONFIG, KEYSTORE_CONFIG } from './config.js';
-import { isAllowed } from './allowlist.js';
 let cachedClient = null;
 export async function getClient() {
     if (!cachedClient) {
@@ -75,11 +74,6 @@ export async function send(wallet, fromAddress, toAddress, amount, options = {})
     // Validate destination address
     if (!toAddress.startsWith(NEUTARO_CONFIG.bech32Prefix)) {
         throw new Error(`Invalid address prefix. Expected ${NEUTARO_CONFIG.bech32Prefix}, got ${toAddress.slice(0, 8)}...`);
-    }
-    // Check allowlist
-    const allowCheck = await isAllowed(toAddress, 'send');
-    if (!allowCheck.allowed) {
-        throw new Error(allowCheck.reason || 'Address not in allowlist');
     }
     const client = await getSigningClient(wallet);
     const sendAmount = {

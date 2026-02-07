@@ -4,6 +4,7 @@ import { CLI_CONFIG, NEUTARO_CONFIG, KEYSTORE_CONFIG } from './config.js';
 import { generateWallet, saveKeystore, loadKeystore, keystoreExists, getKeystoreAddress, } from './keystore.js';
 import { getBalance, send, getChainInfo, formatAmount, parseAmount, generateReceiveAddress, } from './wallet.js';
 import { recordSendReceipt, getRecentReceipts, formatReceipt } from './receipts.js';
+import { loadAllowlist, evaluateAllowlist } from './allowlist.js';
 // Simple argument parsing (no external deps for core CLI)
 const args = process.argv.slice(2);
 const command = args[0];
@@ -50,6 +51,8 @@ OPTIONS:
   --keystore <path>     Custom keystore path
   --memo <text>         Transaction memo
   --yes                 Skip confirmations
+  --allowlist <path>    Custom allowlist file (default ~/.clawpurse/allowlist.json)
+  --override-allowlist  Bypass allowlist checks for this send
   --help                Show this help
 
 SAFETY:
@@ -163,8 +166,26 @@ async function sendCommand() {
     }
     const memo = getArg('--memo');
     const skipConfirmation = hasFlag('--yes');
+    const overrideAllowlist = hasFlag('--override-allowlist');
+    const allowlistPath = getArg('--allowlist');
     console.log('Loading wallet...');
     const { wallet, address } = await loadKeystore(password, keystorePath);
+    const amountMicro = parseAmount(amount);
+    if (!overrideAllowlist) {
+        try {
+            const allowlist = await loadAllowlist(allowlistPath);
+            if (allowlist) {
+                const check = evaluateAllowlist(allowlist, toAddress, amountMicro, memo);
+                if (!check.allowed) {
+                    throw new Error(`${check.reason || 'Destination blocked by allowlist'} — use --override-allowlist to bypass.`);
+                }
+            }
+        }
+        catch (error) {
+            console.error(`Allowlist error: ${error instanceof Error ? error.message : error}`);
+            process.exit(1);
+        }
+    }
     console.log(`Sending ${amount} ${NEUTARO_CONFIG.displayDenom} to ${toAddress}...`);
     try {
         const result = await send(wallet, address, toAddress, amount, {
@@ -172,7 +193,7 @@ async function sendCommand() {
             skipConfirmation,
         });
         // Record receipt
-        const receipt = await recordSendReceipt(result, address, toAddress, parseAmount(amount).toString(), memo);
+        const receipt = await recordSendReceipt(result, address, toAddress, amountMicro.toString(), memo);
         console.log(`\nTransaction successful!`);
         console.log(formatReceipt(receipt));
     }

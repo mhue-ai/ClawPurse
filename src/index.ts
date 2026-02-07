@@ -41,12 +41,8 @@ export {
 
 export {
   loadAllowlist,
-  saveAllowlist,
-  addToAllowlist,
-  removeFromAllowlist,
-  isAllowed,
-  listAllowlist,
-  setAllowlistEnabled,
-  setAllowlistMode,
+  evaluateAllowlist,
+  getAllowlistPath,
   type AllowlistConfig,
+  type AllowlistDestination,
 } from './allowlist.js';
