@@ -4,7 +4,9 @@ import { CLI_CONFIG, NEUTARO_CONFIG, KEYSTORE_CONFIG } from './config.js';
 import { generateWallet, saveKeystore, loadKeystore, keystoreExists, getKeystoreAddress, } from './keystore.js';
 import { getBalance, send, getChainInfo, formatAmount, parseAmount, generateReceiveAddress, } from './wallet.js';
 import { recordSendReceipt, getRecentReceipts, formatReceipt } from './receipts.js';
-import { loadAllowlist, evaluateAllowlist } from './allowlist.js';
+import { loadAllowlist, evaluateAllowlist, getAllowlistPath, saveAllowlist, allowlistExists, } from './allowlist.js';
+import pkg from 'enquirer';
+const { prompt } = pkg;
 // Simple argument parsing (no external deps for core CLI)
 const args = process.argv.slice(2);
 const command = args[0];
@@ -18,7 +20,16 @@ function getArg(flag) {
 function hasFlag(flag) {
     return args.includes(flag);
 }
-async function promptPassword(prompt) {
+function parseAllowlistMode(value) {
+    if (!value)
+        return undefined;
+    if (value !== 'enforce' && value !== 'allow') {
+        console.error('Invalid allowlist mode. Use "enforce" or "allow".');
+        process.exit(1);
+    }
+    return value;
+}
+async function promptPassword(promptText) {
     // For now, use env var or argument - interactive prompt needs enquirer
     const password = process.env.CLAWPURSE_PASSWORD || getArg('--password');
     if (!password) {
@@ -26,6 +37,45 @@ async function promptPassword(prompt) {
         process.exit(1);
     }
     return password;
+}
+async function ensureAllowlistConfigured(modeFlag, configPath) {
+    const targetPath = configPath || getAllowlistPath();
+    const exists = await allowlistExists(targetPath);
+    let mode = modeFlag;
+    if (!mode) {
+        if (exists) {
+            console.log(`Allowlist already configured at ${targetPath}`);
+            return;
+        }
+        console.log('\nGuardrail: Destination allowlist');
+        console.log('Enforce mode blocks sends to unknown addresses. Allow mode lets you send to anyone but still logs entries.');
+        console.log('You can override enforcement per transaction with --override-allowlist if needed.');
+        if (process.stdout.isTTY) {
+            const response = await prompt({
+                type: 'select',
+                name: 'mode',
+                message: 'How should ClawPurse handle unknown destination addresses?',
+                choices: [
+                    { name: 'enforce', message: 'Enforce (block unknown addresses; safest)' },
+                    { name: 'allow', message: 'Allow (warn only; you manage trust manually)' },
+                ],
+            });
+            mode = response.mode;
+        }
+        else {
+            mode = 'enforce';
+            console.log('Non-interactive session detected; defaulting allowlist to ENFORCE.');
+        }
+    }
+    const allowlistConfig = {
+        defaultPolicy: {
+            blockUnknown: mode === 'enforce',
+            requireMemo: mode === 'enforce' ? false : false,
+        },
+        destinations: [],
+    };
+    await saveAllowlist(allowlistConfig, targetPath);
+    console.log(`Allowlist configuration saved to ${targetPath} (${mode === 'enforce' ? 'enforcing' : 'allowing'} unknown destinations).`);
 }
 function printHelp() {
     console.log(`
@@ -36,7 +86,7 @@ USAGE:
   clawpurse <command> [options]
 
 COMMANDS:
-  init                  Create a new wallet
+  init                  Create a new wallet (guardrail wizard runs here)
   import                Import existing wallet from mnemonic
   balance               Check wallet balance
   send <to> <amount>    Send tokens (amount in ${NEUTARO_CONFIG.displayDenom})
@@ -45,6 +95,7 @@ COMMANDS:
   status                Check chain connection status
   address               Show wallet address
   export                Export mnemonic (DANGEROUS)
+  allowlist <cmd>       Manage allowlists (init | list | add | remove)
 
 OPTIONS:
   --password <pass>     Wallet password (or set CLAWPURSE_PASSWORD)
@@ -52,6 +103,8 @@ OPTIONS:
   --memo <text>         Transaction memo
   --yes                 Skip confirmations
   --allowlist <path>    Custom allowlist file (default ~/.clawpurse/allowlist.json)
+  --allowlist-file <path> Same as --allowlist
+  --allowlist-mode <enforce|allow>  Pre-set guardrail choice during init
   --override-allowlist  Bypass allowlist checks for this send
   --help                Show this help
 
@@ -81,6 +134,9 @@ async function initCommand() {
     const { mnemonic, address } = await generateWallet();
     console.log('Encrypting and saving keystore...');
     const savedPath = await saveKeystore(mnemonic, address, password, keystorePath);
+    const allowlistModeFlag = parseAllowlistMode(getArg('--allowlist-mode'));
+    const allowlistFileArg = getAllowlistFileFlag();
+    await ensureAllowlistConfigured(allowlistModeFlag, allowlistFileArg);
     console.log(`
 ╔══════════════════════════════════════════════════════════════════╗
 ║                    WALLET CREATED SUCCESSFULLY                   ║
@@ -115,9 +171,126 @@ async function importCommand() {
     const { walletFromMnemonic } = await import('./keystore.js');
     const { address } = await walletFromMnemonic(mnemonic);
     const savedPath = await saveKeystore(mnemonic, address, password, keystorePath);
+    const allowlistModeFlag = parseAllowlistMode(getArg('--allowlist-mode'));
+    const allowlistFileArg = getAllowlistFileFlag();
+    await ensureAllowlistConfigured(allowlistModeFlag, allowlistFileArg);
     console.log(`Wallet imported successfully!`);
     console.log(`Address: ${address}`);
     console.log(`Keystore: ${savedPath}`);
+}
+function getAllowlistFileFlag() {
+    return getArg('--allowlist-file') || getArg('--allowlist');
+}
+async function handleAllowlistCommand() {
+    const action = args[1];
+    const allowlistPath = getAllowlistFileFlag();
+    switch (action) {
+        case 'list':
+            await allowlistListCommand(allowlistPath);
+            break;
+        case 'add':
+            await allowlistAddCommand(allowlistPath);
+            break;
+        case 'remove':
+            await allowlistRemoveCommand(allowlistPath);
+            break;
+        case 'init':
+            await ensureAllowlistConfigured(parseAllowlistMode(getArg('--mode')), allowlistPath);
+            break;
+        default:
+            console.error('Usage: clawpurse allowlist <list|add|remove|init> [options]');
+            process.exit(1);
+    }
+}
+async function allowlistListCommand(configPath) {
+    const allowlist = await loadAllowlist(configPath);
+    if (!allowlist) {
+        console.log('No allowlist configured yet. Run "clawpurse allowlist init" to create one.');
+        return;
+    }
+    console.log('Default policy:');
+    console.log(`  blockUnknown: ${allowlist.defaultPolicy?.blockUnknown ?? false}`);
+    if (allowlist.defaultPolicy?.maxAmount !== undefined) {
+        console.log(`  maxAmount: ${allowlist.defaultPolicy.maxAmount} ${NEUTARO_CONFIG.displayDenom}`);
+    }
+    if (allowlist.defaultPolicy?.requireMemo) {
+        console.log('  requireMemo: true');
+    }
+    if (allowlist.destinations.length === 0) {
+        console.log('\nNo specific destinations yet. Use "clawpurse allowlist add" to add one.');
+        return;
+    }
+    console.log('\nDestinations:');
+    allowlist.destinations.forEach((dest, idx) => {
+        console.log(` ${idx + 1}. ${dest.name || dest.address}`);
+        console.log(`    Address: ${dest.address}`);
+        if (dest.maxAmount !== undefined) {
+            console.log(`    Max amount: ${dest.maxAmount} ${NEUTARO_CONFIG.displayDenom}`);
+        }
+        if (dest.needsMemo) {
+            console.log('    Memo required: yes');
+        }
+        if (dest.notes) {
+            console.log(`    Notes: ${dest.notes}`);
+        }
+    });
+}
+async function allowlistAddCommand(configPath) {
+    const address = args[2];
+    if (!address) {
+        console.error('Usage: clawpurse allowlist add <address> [--name NAME] [--max AMOUNT] [--memo-required]');
+        process.exit(1);
+    }
+    if (!address.startsWith(NEUTARO_CONFIG.bech32Prefix)) {
+        console.error(`Invalid address. Expected prefix ${NEUTARO_CONFIG.bech32Prefix}`);
+        process.exit(1);
+    }
+    const name = getArg('--name');
+    const maxStr = getArg('--max');
+    const needsMemo = hasFlag('--memo-required');
+    const notes = getArg('--notes');
+    let maxAmount;
+    if (maxStr) {
+        const parsed = Number(maxStr);
+        if (Number.isNaN(parsed) || parsed < 0) {
+            console.error('Invalid --max amount. Provide a positive number.');
+            process.exit(1);
+        }
+        maxAmount = parsed;
+    }
+    const existing = (await loadAllowlist(configPath)) ?? { defaultPolicy: { blockUnknown: false }, destinations: [] };
+    const filtered = existing.destinations.filter((d) => d.address !== address);
+    const newEntry = {
+        address,
+        name,
+        maxAmount,
+        needsMemo: needsMemo ? true : undefined,
+        notes,
+    };
+    filtered.push(newEntry);
+    existing.destinations = filtered;
+    await saveAllowlist(existing, configPath);
+    console.log(`Destination ${address} saved${name ? ` (${name})` : ''}.`);
+}
+async function allowlistRemoveCommand(configPath) {
+    const address = args[2];
+    if (!address) {
+        console.error('Usage: clawpurse allowlist remove <address>');
+        process.exit(1);
+    }
+    const existing = await loadAllowlist(configPath);
+    if (!existing) {
+        console.error('No allowlist found. Nothing to remove.');
+        process.exit(1);
+    }
+    const filtered = existing.destinations.filter((d) => d.address !== address);
+    if (filtered.length === existing.destinations.length) {
+        console.error('Address not found in allowlist.');
+        process.exit(1);
+    }
+    existing.destinations = filtered;
+    await saveAllowlist(existing, configPath);
+    console.log(`Removed ${address} from allowlist.`);
 }
 async function balanceCommand() {
     const keystorePath = getArg('--keystore');
@@ -138,7 +311,7 @@ async function balanceCommand() {
 ║                       WALLET BALANCE                         ║
 ╠══════════════════════════════════════════════════════════════╣
 ║ Address: ${result.address.slice(0, 52).padEnd(52)}║
-║ Balance: ${result.primary.displayAmount.padEnd(52)} ${result.primary.displayDenom.padEnd(0)}║
+║ Balance: ${(result.primary.displayAmount + ' ' + result.primary.displayDenom).padEnd(52)}║
 ╚══════════════════════════════════════════════════════════════╝
 `);
         if (result.balances.length > 1) {
@@ -167,7 +340,7 @@ async function sendCommand() {
     const memo = getArg('--memo');
     const skipConfirmation = hasFlag('--yes');
     const overrideAllowlist = hasFlag('--override-allowlist');
-    const allowlistPath = getArg('--allowlist');
+    const allowlistPath = getAllowlistFileFlag();
     console.log('Loading wallet...');
     const { wallet, address } = await loadKeystore(password, keystorePath);
     const amountMicro = parseAmount(amount);
@@ -317,6 +490,9 @@ async function main() {
                 break;
             case 'export':
                 await exportCommand();
+                break;
+            case 'allowlist':
+                await handleAllowlistCommand();
                 break;
             default:
                 console.error(`Unknown command: ${command}`);

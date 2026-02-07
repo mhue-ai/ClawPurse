@@ -28,7 +28,8 @@ import {
   type AllowlistConfig,
   type AllowlistDestination,
 } from './allowlist.js';
-import { prompt } from 'enquirer';
+import pkg from 'enquirer';
+const { prompt } = pkg;
 
 // Simple argument parsing (no external deps for core CLI)
 const args = process.argv.slice(2);
@@ -373,7 +374,7 @@ async function balanceCommand() {
 ║                       WALLET BALANCE                         ║
 ╠══════════════════════════════════════════════════════════════╣
 ║ Address: ${result.address.slice(0, 52).padEnd(52)}║
-║ Balance: ${result.primary.displayAmount.padEnd(52)} ${result.primary.displayDenom.padEnd(0)}║
+║ Balance: ${(result.primary.displayAmount + ' ' + result.primary.displayDenom).padEnd(52)}║
 ╚══════════════════════════════════════════════════════════════╝
 `);
     

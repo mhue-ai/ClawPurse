@@ -1,123 +1,370 @@
 # ClawPurse Operator Guide
 
-How to run ClawPurse safely and how other nodes can trust your transactions.
+Complete guide for operators running ClawPurse on OpenClaw nodes.
 
-## Setup
+## Prerequisites
+
+- Node.js 18+ installed
+- Network access to Neutaro RPC (`https://rpc2.neutaro.io`)
+- Terminal access for CLI commands
+
+---
+
+## Installation
 
 ```bash
+# Clone or navigate to ClawPurse directory
 cd ClawPurse
+
+# Install dependencies
 npm install
+
+# Build TypeScript
 npm run build
-npm link  # makes 'clawpurse' available globally
+
+# Link globally (makes 'clawpurse' available everywhere)
+npm link
 ```
 
-## First-Time Wallet Setup
+---
+
+## Initial Wallet Setup
+
+### Create a New Wallet
 
 ```bash
-# Create a new wallet (saves encrypted keystore to ~/.clawpurse/keystore.enc)
 clawpurse init --password <strong-password>
-
-# IMPORTANT: Back up the 24-word mnemonic shown during init!
-# It's the ONLY way to recover your wallet.
 ```
+
+This will:
+1. Generate a new 24-word mnemonic
+2. Create an encrypted keystore at `~/.clawpurse/keystore.enc`
+3. Run the guardrail wizard (choose enforce or allow mode)
+4. Display your wallet address and mnemonic
+
+> ⚠️ **CRITICAL**: Back up the mnemonic immediately! It's only shown once.
+
+**Example output:**
+```
+Generating new wallet...
+Encrypting and saving keystore...
+
+╔══════════════════════════════════════════════════════════════════╗
+║                    WALLET CREATED SUCCESSFULLY                   ║
+╠══════════════════════════════════════════════════════════════════╣
+║ Address: neutaro1fnpesef2y2lzt48xvtqeh4dts6ztdeuq86vgt3          ║
+║ Keystore: /home/user/.clawpurse/keystore.enc                     ║
+╠══════════════════════════════════════════════════════════════════╣
+║ ⚠️  BACKUP YOUR MNEMONIC - THIS IS THE ONLY TIME IT'S SHOWN ⚠️   ║
+╠══════════════════════════════════════════════════════════════════╣
+║  1. word1        2. word2        3. word3        4. word4        ║
+║  5. word5        6. word6        7. word7        8. word8        ║
+...
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+### Import an Existing Wallet
+
+```bash
+clawpurse import --mnemonic "word1 word2 ... word24" --password <password>
+```
+
+Or use environment variable:
+```bash
+export CLAWPURSE_MNEMONIC="word1 word2 ... word24"
+clawpurse import --password <password>
+```
+
+---
 
 ## Daily Operations
 
+### Check Chain Status
+
 ```bash
-# Check connection to Neutaro chain
 clawpurse status
-
-# Check your balance
-clawpurse balance --password <password>
-
-# Get your receive address
-clawpurse receive
-
-# Send tokens
-clawpurse send <recipient-address> <amount> --password <password>
-
-# View recent transactions
-clawpurse history
 ```
+
+Verifies connection to the Neutaro network:
+```
+╔══════════════════════════════════════════════════════════════════╗
+║                      CHAIN STATUS                                ║
+╠══════════════════════════════════════════════════════════════════╣
+║ Status: 🟢 CONNECTED                                             ║
+║ Chain ID: Neutaro-1                                              ║
+║ Block Height: 13837090                                           ║
+║ RPC: https://rpc2.neutaro.io                                     ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+### View Your Address
+
+```bash
+clawpurse address
+# Output: neutaro1fnpesef2y2lzt48xvtqeh4dts6ztdeuq86vgt3
+```
+
+### Check Balance
+
+```bash
+clawpurse balance --password <password>
+```
+
+Or with environment variable:
+```bash
+export CLAWPURSE_PASSWORD=<password>
+clawpurse balance
+```
+
+### Get Receive Address
+
+```bash
+clawpurse receive
+```
+
+Shows your address and QR data for receiving NTMPI.
+
+### Send Tokens
+
+```bash
+clawpurse send <recipient-address> <amount> --password <password>
+```
+
+**Options:**
+| Flag | Description |
+|------|-------------|
+| `--memo "text"` | Add memo to transaction |
+| `--yes` | Skip confirmation for amounts > 100 NTMPI |
+| `--override-allowlist` | Bypass allowlist restrictions |
+
+**Examples:**
+```bash
+# Simple send
+clawpurse send neutaro1abc... 10.5 --password mypass
+
+# With memo
+clawpurse send neutaro1abc... 10.5 --memo "payment for service" --password mypass
+
+# Large amount (skip confirmation)
+clawpurse send neutaro1abc... 500 --yes --password mypass
+```
+
+### View Transaction History
+
+```bash
+clawpurse history
+# Or limit results
+clawpurse history --limit 5
+```
+
+### Export Mnemonic (⚠️ Dangerous)
+
+```bash
+clawpurse export --yes --password <password>
+```
+
+Only use this if you need to back up or migrate the wallet.
+
+---
+
+## Allowlist Management
+
+The allowlist controls which addresses can receive funds from your wallet.
+
+### Run Guardrail Wizard
+
+```bash
+clawpurse allowlist init
+# Or pre-set mode
+clawpurse allowlist init --mode enforce
+```
+
+### View Allowlist
+
+```bash
+clawpurse allowlist list
+```
+
+### Add Trusted Destination
+
+```bash
+clawpurse allowlist add neutaro1xyz... --name "Partner" --max 500
+```
+
+### Remove Destination
+
+```bash
+clawpurse allowlist remove neutaro1xyz...
+```
+
+See [ALLOWLIST.md](./ALLOWLIST.md) for complete documentation.
+
+---
 
 ## Safety Rails
 
-ClawPurse includes built-in safety limits:
+ClawPurse includes built-in limits to prevent costly mistakes:
 
 | Setting | Default | Purpose |
 |---------|---------|---------|
 | `maxSendAmount` | 1000 NTMPI | Hard cap per transaction |
-| `requireConfirmAbove` | 100 NTMPI | Requires `--yes` flag above this |
-| Allowlist mode | Prompt during `init` | Enforce or allow unknown destinations |
+| `requireConfirmAbove` | 100 NTMPI | Requires `--yes` flag |
+| Allowlist mode | Choose during init | Enforce or allow unknown destinations |
 
-To adjust core limits, edit `src/config.ts` and rebuild:
+### Adjusting Limits
+
+Edit `src/config.ts` and rebuild:
 
 ```typescript
 export const KEYSTORE_CONFIG = {
-  maxSendAmount: 5000_000000,      // 5000 NTMPI
+  maxSendAmount: 5000_000000,      // 5000 NTMPI (micro-units)
   requireConfirmAbove: 500_000000, // 500 NTMPI
   // ...
 };
 ```
 
+Then:
+```bash
+npm run build
+npm link
+```
+
+---
+
 ## Transaction Receipts
 
-Every send creates a local receipt in `~/.clawpurse/receipts.json`:
+Every send creates a receipt in `~/.clawpurse/receipts.json`:
 
 ```json
 {
-  "id": "send-abc123-1707300000000",
+  "id": "send-79EC3BC1-1770478262438",
   "type": "send",
-  "txHash": "ABC123...",
-  "fromAddress": "neutaro1...",
-  "toAddress": "neutaro1...",
-  "amount": "1000000",
-  "displayAmount": "1.000000 NTMPI",
-  "height": 13834000,
-  "timestamp": "2026-02-07T12:00:00.000Z",
+  "txHash": "79EC3BC17965A0987F4B7462C40B5FAC0889C5D3F9DD63C72B59571987E40F7D",
+  "fromAddress": "neutaro1fnpesef2y2lzt48xvtqeh4dts6ztdeuq86vgt3",
+  "toAddress": "neutaro16us2fdzl8vf2lvn5tqsswajkqtelfpspxj9hvx",
+  "amount": "400000",
+  "displayAmount": "0.400000 NTMPI",
+  "denom": "uneutaro",
+  "memo": "test tx",
+  "height": 13835843,
+  "gasUsed": 87567,
+  "timestamp": "2026-02-07T15:31:02.434Z",
   "status": "confirmed"
 }
 ```
 
-## Allowlist CLI
+**Back up this file** for your audit trail.
 
+---
+
+## Verifying Transactions
+
+### As the Sender
+
+After sending, share the receipt or tx hash with the recipient.
+
+### As the Recipient
+
+Verify on-chain:
+```bash
+curl "https://api2.neutaro.io/cosmos/tx/v1beta1/txs/<TX_HASH>"
 ```
-# Run the guardrail wizard again (choose enforce or allow)
-clawpurse allowlist init [--mode enforce|allow]
 
-# Show default policy + entries
-clawpurse allowlist list
+Confirm:
+- `from_address` matches expected sender
+- `to_address` is your address
+- `amount` and `denom` are correct
+- Transaction is in a confirmed block
 
-# Add/update an entry with an optional cap and memo requirement
-clawpurse allowlist add <addr> --name "Treasury" --max 1000 --memo-required
+See [TRUST-MODEL.md](./TRUST-MODEL.md) for detailed verification procedures.
 
-# Remove an entry
-clawpurse allowlist remove <addr>
+---
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `CLAWPURSE_PASSWORD` | Wallet password (avoids `--password` flag) |
+| `CLAWPURSE_MNEMONIC` | Mnemonic for import (avoids `--mnemonic` flag) |
+
+**Example session:**
+```bash
+export CLAWPURSE_PASSWORD=mysecretpassword
+clawpurse balance
+clawpurse send neutaro1... 10.0 --memo "payment"
+clawpurse history
 ```
 
-## Verifying Transactions (For Other Nodes)
-
-1. Ask the sender for the tx hash or receipt.
-2. Query the chain:
-   ```bash
-   curl "https://api2.neutaro.io/cosmos/tx/v1beta1/txs/<TX_HASH>"
-   ```
-3. Confirm `from`, `to`, amount, and memo match what you expect.
-4. Optional: compare against the sender's receipt entry.
+---
 
 ## Security Checklist
 
-- [ ] Keystore file (`~/.clawpurse/keystore.enc`) has mode 0600
-- [ ] Mnemonic backed up offline
-- [ ] Password is strong (12+ chars)
-- [ ] `receipts.json` backed up for audit trail
-- [ ] Safety limits set for your risk tolerance
+### Initial Setup
+- [ ] Used strong password (12+ characters)
+- [ ] Backed up mnemonic offline immediately
+- [ ] Verified keystore permissions: `ls -la ~/.clawpurse/keystore.enc` shows `-rw-------`
+
+### Ongoing
+- [ ] Safety limits configured appropriately
+- [ ] Allowlist in enforce mode with trusted addresses only
+- [ ] Receipts backed up periodically
+- [ ] Password not stored in scripts or shell history
+
+### Host Security
+- [ ] Machine is secured (firewall, updates)
+- [ ] Limited user access to keystore
+- [ ] No malware or keyloggers
+
+---
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
-| `Status: DISCONNECTED` | Check internet or swap RPC URL in `src/config.ts` |
-| "Amount exceeds safety limit" | Adjust config or send smaller amount |
-| "Invalid address prefix" | Neutaro addresses start with `neutaro1` |
-| Forgot password | Re-import using mnemonic: `clawpurse import --mnemonic "..." --password <new>` |
+| Issue | Likely Cause | Solution |
+|-------|--------------|----------|
+| `Status: 🔴 DISCONNECTED` | Network or RPC issue | Check internet; try different RPC in config |
+| "Amount exceeds safety limit" | `maxSendAmount` too low | Adjust in `src/config.ts` and rebuild |
+| "Invalid address prefix" | Wrong address format | Neutaro addresses start with `neutaro1` |
+| "Password incorrect" | Wrong password | Double-check; re-import from mnemonic if forgotten |
+| "Destination not in allowlist" | Allowlist enforcement | Add address or use `--override-allowlist` |
+| `ENOENT: no such file` | Missing keystore | Run `clawpurse init` or `import` |
+
+### Reset Everything
+
+If you need to start fresh:
+```bash
+# Remove all ClawPurse data (DESTRUCTIVE!)
+rm -rf ~/.clawpurse
+
+# Reinitialize
+clawpurse init --password <new-password>
+```
+
+> ⚠️ Only do this if you have your mnemonic backed up or don't need the existing wallet.
+
+---
+
+## Command Reference
+
+| Command | Description |
+|---------|-------------|
+| `clawpurse init` | Create new wallet |
+| `clawpurse import` | Import from mnemonic |
+| `clawpurse status` | Check chain connection |
+| `clawpurse address` | Show wallet address |
+| `clawpurse balance` | Check balance |
+| `clawpurse receive` | Show receive info |
+| `clawpurse send <to> <amt>` | Send tokens |
+| `clawpurse history` | View transactions |
+| `clawpurse export --yes` | Export mnemonic |
+| `clawpurse allowlist init` | Setup allowlist |
+| `clawpurse allowlist list` | View allowlist |
+| `clawpurse allowlist add` | Add destination |
+| `clawpurse allowlist remove` | Remove destination |
+
+---
+
+## Support
+
+- **Neutaro chain docs**: https://docs.neutaro.io
+- **Block explorer**: https://explorer.neutaro.io
+- **RPC endpoints**: `https://rpc2.neutaro.io`, `https://api2.neutaro.io`
