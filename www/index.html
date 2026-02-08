@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClawPurse &mdash; Local Timpi Wallet for Agentic AI &amp; Automation</title>
+  <title>ClawPurse | Timpi Wallet & Treasury Automation for DePIN + Agents</title>
+  <meta name="description" content="ClawPurse is the local Timpi / NTMPI wallet that automates staking treasuries for DePIN operators and agentic AI workflows with encrypted guardrails.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -53,6 +54,10 @@
     .info-card ul { padding-left: 18px; margin: 0 0 12px; color: var(--text-secondary); }
     .info-card li { margin-bottom: 6px; }
     .tag { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; letter-spacing: 0.03em; background: rgba(0,229,204,0.1); color: var(--cyan-bright); margin-bottom: 12px; }
+    .split-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .stat-card { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 18px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+    .stat-card h3 { margin: 0 0 8px; color: var(--cyan-bright); }
+    .stat-card p { margin: 0 0 12px; color: var(--text-secondary); }
     code, pre { font-family: var(--font-mono); background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 4px 6px; }
     pre { padding: 18px; overflow-x: auto; background: var(--bg-elevated); }
     .cta {
@@ -86,18 +91,33 @@
       header { padding-top: 48px; }
     }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ClawPurse",
+    "operatingSystem": "Linux, macOS, Windows",
+    "applicationCategory": "FinanceApplication",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "description": "Local Timpi / NTMPI wallet with staking treasury automation, DePIN guardrails, and agentic AI integrations.",
+    "softwareVersion": "2.0.0",
+    "keywords": "Timpi wallet, NTMPI staking, DePIN treasury automation, agentic AI wallet"
+  }
+  </script>
 </head>
 <body>
   <header>
     <p>🪙 Agentic AI Wallet</p>
     <h1>ClawPurse 2.0</h1>
     <p class="lede">
-      A local-only Timpi / NTMPI wallet for agentic AI (including OpenClaw), automation scripts, and individual users. Generate, guard, and verify transactions with
-      encrypted keystores, destination allowlists, and auditable receipts &mdash; no third-party custody required.
+      A local-only Timpi / NTMPI wallet for DePIN operators, validator treasuries, and agentic AI (including OpenClaw). Generate, guard, and verify transactions with
+      encrypted keystores, staking automation, destination allowlists, and auditable receipts &mdash; no third-party custody required.
     </p>
     <div class="cta">
       <a class="primary" href="https://github.com/mhue-ai/ClawPurse" target="_blank" rel="noopener">View on GitHub</a>
       <a class="secondary" href="https://github.com/mhue-ai/ClawPurse/blob/main/README.md" target="_blank" rel="noopener">Read the docs</a>
+      <a class="secondary" href="#staking">See the treasury model</a>
+      <a class="primary" style="background: linear-gradient(135deg, var(--cyan-bright), #00b8a9); color: var(--bg-deep); box-shadow: 0 10px 30px rgba(0,229,204,0.35);" href="https://drip.clawpurse.ai" target="_blank" rel="noopener">Visit Timpi Drip Faucet</a>
     </div>
   </header>
   <main>
@@ -133,6 +153,62 @@
           <p>Delegate NTMPI to validators, earn rewards, and manage delegations—all from the CLI or programmatic API.</p>
         </li>
       </ul>
+    </section>
+
+    <section id="staking">
+      <h2>Staking Treasury Automation</h2>
+      <p style="color: var(--text-secondary); max-width: 760px;">
+        ClawPurse keeps faucet treasuries and validator payouts solvent by staking the bulk of funds (Timpi Drip runs a 95k / 5k staked-to-liquid split with a 17% APY assumption).
+        Model your DePIN runway, schedule restakes, and surface the 22-day Neutaro unbonding clock for every delegation. Want to see it live? <a href="https://drip.clawpurse.ai" target="_blank" style="color: var(--cyan-bright);">Timpi Drip</a> is the reference faucet powered entirely by this stack.
+      </p>
+      <div class="split-grid">
+        <div class="stat-card">
+          <h3>Yield-aware guardrails</h3>
+          <p>Define how much of the pool stays liquid vs. staked, and let ClawPurse warn you before payouts exceed the buffer.</p>
+          <ul style="padding-left:18px; color: var(--text-secondary);">
+            <li>Staking split preview w/ 30-day runway math</li>
+            <li>Validator quality signals (commission + uptime)</li>
+            <li>Unbonding timer with reminders</li>
+          </ul>
+        </div>
+        <div class="stat-card">
+          <h3>Operator checklist</h3>
+          <p>Ship new treasury policies quickly—ClawPurse generates documentation straight into your repo.</p>
+          <ul style="padding-left:18px; color: var(--text-secondary);">
+            <li>Allowlist diffs &amp; approvals (docs/ALLOWLIST.md)</li>
+            <li>Stake/unstake receipts for auditors</li>
+            <li>CLI + JSON exports for dashboards</li>
+          </ul>
+        </div>
+        <div class="stat-card">
+          <h3>DePIN-native hooks</h3>
+          <p>Use the Node.js API to rebalance stakes from cron jobs, refill faucets, or pipe metrics into Grafana.</p>
+          <code>await wallet.delegate(validator, amount)</code>
+        </div>
+      </div>
+    </section>
+
+    <section id="agents">
+      <h2>OpenClaw &amp; Agentic AI Workflows</h2>
+      <p style="color: var(--text-secondary); max-width: 760px;">
+        ClawPurse was built inside the OpenClaw ecosystem, so autonomous agents get first-class wallet access with human-grade guardrails.
+        Proof-of-work faucets, bounty payouts, or automated restakes all run from the same local keystore.
+      </p>
+      <div class="split-grid">
+        <div class="stat-card">
+          <h3>Skill-ready</h3>
+          <p>The upcoming ClawPurse OpenClaw skill wraps the CLI for drop-in agent usage. Pipe receipts straight back to chat.</p>
+          <code>sessions_spawn("Send 1 NTMPI via ClawPurse")</code>
+        </div>
+        <div class="stat-card">
+          <h3>Priority lanes for agents</h3>
+          <p>Timpi Drip gives OpenClaw-authenticated agents a higher throughput drip. Reuse the same attestation logic for your dApps.</p>
+        </div>
+        <div class="stat-card">
+          <h3>Proof-of-work over CAPTCHA</h3>
+          <p>Keep AI-compatible surfaces open. ClawPurse ships the PoW solver + API that powers Timpi Drip&rsquo;s agent-friendly faucet.</p>
+        </div>
+      </div>
     </section>
 
     <section>
