@@ -90,6 +90,35 @@ Pre-set the choice with `--allowlist-mode enforce|allow` or rerun the wizard via
 | `allowlist add <addr>` | Add/update a destination |
 | `allowlist remove <addr>` | Remove a destination |
 
+### Staking (v2.0)
+
+| Command | Description |
+|---------|-------------|
+| `stake <validator> <amount>` | Delegate tokens to a validator |
+| `unstake <validator> <amount>` | Undelegate tokens (22-day unbonding) |
+| `redelegate <from> <to> <amount>` | Move stake between validators |
+| `delegations` | Show current delegations |
+| `validators` | List active validators |
+| `unbonding` | Show pending unbonding delegations |
+
+**Staking Examples:**
+```bash
+# List validators
+clawpurse validators
+
+# Stake 1000 NTMPI
+clawpurse stake neutarovaloper1abc... 1000 --password <pass>
+
+# Check your delegations
+clawpurse delegations
+
+# Unstake (requires --yes, 22-day unbonding period)
+clawpurse unstake neutarovaloper1abc... 500 --password <pass> --yes
+
+# Move stake to different validator (no unbonding)
+clawpurse redelegate neutarovaloper1abc... neutarovaloper1xyz... 500 --password <pass>
+```
+
 ## Options
 
 | Flag | Description |
@@ -146,6 +175,37 @@ const result = await send(wallet, address, 'neutaro1...', '10.5', {
   skipConfirmation: true,
 });
 console.log(`TxHash: ${result.txHash}`);
+```
+
+### Staking API (v2.0)
+
+```typescript
+import {
+  loadKeystore,
+  delegate,
+  undelegate,
+  getDelegations,
+  getValidators,
+} from 'clawpurse';
+
+// Load wallet
+const { wallet, address } = await loadKeystore('password');
+
+// List validators
+const validators = await getValidators();
+console.log(validators.map(v => `${v.moniker} - ${v.commission}`));
+
+// Stake tokens
+const stakeResult = await delegate(wallet, address, 'neutarovaloper1...', '1000');
+console.log(`Staked! TxHash: ${stakeResult.txHash}`);
+
+// Check delegations
+const { delegations, totalStakedDisplay } = await getDelegations(address);
+console.log(`Total staked: ${totalStakedDisplay}`);
+
+// Unstake (22-day unbonding period)
+const unstakeResult = await undelegate(wallet, address, 'neutarovaloper1...', '500');
+console.log(`Unstaking started: ${unstakeResult.txHash}`);
 ```
 
 ## Configuration

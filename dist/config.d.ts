@@ -19,7 +19,7 @@ export declare const KEYSTORE_CONFIG: {
 };
 export declare const CLI_CONFIG: {
     readonly name: "clawpurse";
-    readonly version: "0.1.0";
-    readonly description: "Local Timpi/NTMPI wallet for OpenClaw nodes";
+    readonly version: "2.0.0";
+    readonly description: "Local Timpi/NTMPI wallet for agentic AI, automation, and individuals";
 };
 //# sourceMappingURL=config.d.ts.map

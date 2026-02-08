@@ -13,6 +13,8 @@ ClawPurse provides cryptocurrency wallet functionality for AI agents (including 
 - **Receive tokens** – Get wallet address for incoming payments
 - **View transaction history** – List recent send/receive activity
 - **Verify chain status** – Check connectivity to Neutaro network
+- **Stake tokens** – Delegate NTMPI to validators for rewards (v2.0)
+- **Manage delegations** – View, redelegate, and unstake tokens (v2.0)
 
 ## Installation
 
@@ -78,6 +80,25 @@ Shows recent transactions.
 clawpurse allowlist list              # View trusted destinations
 clawpurse allowlist add <addr>        # Add destination
 clawpurse allowlist remove <addr>     # Remove destination
+```
+
+### Staking (v2.0)
+```bash
+clawpurse validators                  # List active validators
+clawpurse delegations                 # View current delegations
+clawpurse stake <validator> <amount>  # Delegate tokens
+clawpurse unstake <validator> <amount> --yes  # Undelegate (22-day unbonding)
+clawpurse redelegate <from> <to> <amount>     # Move stake between validators
+clawpurse unbonding                   # Show pending unbonding
+```
+
+**Staking for agents:**
+```
+1. Run: clawpurse validators
+2. Select validator with good uptime and reasonable commission
+3. Run: clawpurse stake <validator> <amount> --yes
+4. Monitor with: clawpurse delegations
+5. Rewards auto-deposit to liquid balance on Neutaro
 ```
 
 ## Safety Features

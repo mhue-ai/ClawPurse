@@ -26,7 +26,7 @@ export const KEYSTORE_CONFIG = {
 };
 export const CLI_CONFIG = {
     name: 'clawpurse',
-    version: '0.1.0',
-    description: 'Local Timpi/NTMPI wallet for OpenClaw nodes',
+    version: '2.0.0',
+    description: 'Local Timpi/NTMPI wallet for agentic AI, automation, and individuals',
 };
 //# sourceMappingURL=config.js.map

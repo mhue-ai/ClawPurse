@@ -90,7 +90,7 @@
 <body>
   <header>
     <p>🪙 Agentic AI Wallet</p>
-    <h1>ClawPurse 1.0 Beta</h1>
+    <h1>ClawPurse 2.0</h1>
     <p class="lede">
       A local-only Timpi / NTMPI wallet for agentic AI (including OpenClaw), automation scripts, and individual users. Generate, guard, and verify transactions with
       encrypted keystores, destination allowlists, and auditable receipts &mdash; no third-party custody required.
@@ -127,6 +127,10 @@
         <li>
           <h3>Agent-Ready</h3>
           <p>Designed for AI agents, automation pipelines, and human operators alike—with full programmatic control.</p>
+        </li>
+        <li>
+          <h3>Staking (v2.0)</h3>
+          <p>Delegate NTMPI to validators, earn rewards, and manage delegations—all from the CLI or programmatic API.</p>
         </li>
       </ul>
     </section>
@@ -177,17 +181,23 @@ clawpurse init --password &lt;pass&gt;
 clawpurse address
 clawpurse balance --password &lt;pass&gt;
 clawpurse send neutaro1... 1.25 --password &lt;pass&gt;
+
+# Staking (v2.0)
+clawpurse validators
+clawpurse stake neutarovaloper1... 100 --password &lt;pass&gt;
+clawpurse delegations
 </code></pre>
     </section>
 
     <section>
-      <h2>Version 1.0 Highlights</h2>
-      <p>Version 1.0.0 ships the full local wallet stack tested on the Neutaro chain:</p>
+      <h2>Version 2.0 Highlights</h2>
+      <p>Version 2.0.0 adds full staking support to the local wallet stack:</p>
       <ul>
-        <li>Real-funds send verified (Tx <code>79EC3BC17965A0987F4B7462C40B5FAC0889C5D3F9DD63C72B59571987E40F7D</code>, block 13835843).</li>
-        <li>Docs bundle: Operator Guide, Trust Model, Allowlist Reference, SKILL.md.</li>
-        <li>Guardrail CLI: <code>allowlist init/list/add/remove</code> with enforcement matrix.</li>
-        <li>Programmatic helpers for wallet generation, balance, send, allowlist management.</li>
+        <li><strong>Staking CLI:</strong> <code>stake</code>, <code>unstake</code>, <code>redelegate</code>, <code>delegations</code>, <code>validators</code>, <code>unbonding</code></li>
+        <li><strong>Staking API:</strong> <code>delegate()</code>, <code>undelegate()</code>, <code>redelegate()</code>, <code>getDelegations()</code>, <code>getValidators()</code></li>
+        <li><strong>22-day unbonding:</strong> Full support for Neutaro's unbonding period with clear warnings</li>
+        <li><strong>Validator discovery:</strong> List all active validators with commission rates</li>
+        <li>All v1.0 features: encrypted keystore, send/receive, allowlists, receipts, guardrails</li>
       </ul>
     </section>
 
@@ -206,7 +216,7 @@ clawpurse send neutaro1... 1.25 --password &lt;pass&gt;
     </section>
   </main>
   <footer>
-    Maintained by the Mhue family • Timpi / NTMPI wallet for Agentic AI &amp; Automation • v1.0.0 beta
+    Maintained by the Mhue family • Timpi / NTMPI wallet for Agentic AI &amp; Automation • v2.0.0
   </footer>
 </body>
 </html>
