@@ -46,3 +46,16 @@ export {
   type AllowlistConfig,
   type AllowlistDestination,
 } from './allowlist.js';
+
+export {
+  getValidators,
+  getDelegations,
+  delegate,
+  undelegate,
+  redelegate,
+  getUnbondingDelegations,
+  type Delegation,
+  type DelegationResult,
+  type StakeResult,
+  type Validator,
+} from './staking.js';

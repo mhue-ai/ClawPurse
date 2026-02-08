@@ -5,4 +5,5 @@ export { generateWallet, walletFromMnemonic, saveKeystore, loadKeystore, keystor
 export { getBalance, send, getChainInfo, formatAmount, parseAmount, generateReceiveAddress, getClient, getSigningClient, estimateGas, } from './wallet.js';
 export { loadReceipts, recordSendReceipt, getRecentReceipts, getReceiptByTxHash, formatReceipt, } from './receipts.js';
 export { loadAllowlist, evaluateAllowlist, getAllowlistPath, } from './allowlist.js';
+export { getValidators, getDelegations, delegate, undelegate, redelegate, getUnbondingDelegations, } from './staking.js';
 //# sourceMappingURL=index.js.map

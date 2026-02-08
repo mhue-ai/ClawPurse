@@ -18,6 +18,14 @@ import {
   parseAmount,
   generateReceiveAddress,
 } from './wallet.js';
+import {
+  getValidators,
+  getDelegations,
+  delegate,
+  undelegate,
+  redelegate,
+  getUnbondingDelegations,
+} from './staking.js';
 import { recordSendReceipt, getRecentReceipts, formatReceipt } from './receipts.js';
 import {
   loadAllowlist,
@@ -132,6 +140,14 @@ COMMANDS:
   address               Show wallet address
   export                Export mnemonic (DANGEROUS)
   allowlist <cmd>       Manage allowlists (init | list | add | remove)
+  
+  STAKING:
+  stake <validator> <amount>    Delegate tokens to a validator
+  unstake <validator> <amount>  Undelegate tokens (22-day unbonding)
+  redelegate <from> <to> <amt>  Move stake between validators
+  delegations                   Show current delegations
+  validators                    List active validators
+  unbonding                     Show pending unbonding delegations
 
 OPTIONS:
   --password <pass>     Wallet password (or set CLAWPURSE_PASSWORD)
@@ -552,6 +568,197 @@ async function exportCommand() {
   console.log(`Mnemonic:\n${mnemonic}\n`);
 }
 
+// Staking commands
+async function stakeCommand() {
+  const validator = args[1];
+  const amount = args[2];
+  
+  if (!validator || !amount) {
+    console.error('Usage: clawpurse stake <validator-address> <amount>');
+    console.error('Example: clawpurse stake neutarovaloper1abc... 100');
+    process.exit(1);
+  }
+  
+  const keystorePath = getArg('--keystore');
+  const password = await promptPassword('Enter password: ');
+  const { wallet, address } = await loadKeystore(password, keystorePath);
+  
+  console.log(`Delegating ${amount} NTMPI to ${validator.slice(0, 20)}...`);
+  
+  const result = await delegate(wallet, address, validator, amount);
+  
+  console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                    DELEGATION SUCCESSFUL                     ║
+╠══════════════════════════════════════════════════════════════╣
+║ Amount: ${result.displayAmount.padEnd(52)}║
+║ Validator: ${validator.slice(0, 50).padEnd(50)}║
+║ Tx Hash: ${result.txHash.slice(0, 52).padEnd(52)}║
+║ Block: ${result.height.toString().padEnd(54)}║
+╚══════════════════════════════════════════════════════════════╝
+`);
+}
+
+async function unstakeCommand() {
+  const validator = args[1];
+  const amount = args[2];
+  
+  if (!validator || !amount) {
+    console.error('Usage: clawpurse unstake <validator-address> <amount>');
+    console.error('Example: clawpurse unstake neutarovaloper1abc... 100');
+    console.error('Note: Unbonding takes 22 days on Neutaro.');
+    process.exit(1);
+  }
+  
+  if (!hasFlag('--yes')) {
+    console.error('⚠️  WARNING: Unbonding takes 22 days. Tokens will be locked.');
+    console.error('Run with --yes flag to confirm.');
+    process.exit(1);
+  }
+  
+  const keystorePath = getArg('--keystore');
+  const password = await promptPassword('Enter password: ');
+  const { wallet, address } = await loadKeystore(password, keystorePath);
+  
+  console.log(`Undelegating ${amount} NTMPI from ${validator.slice(0, 20)}...`);
+  
+  const result = await undelegate(wallet, address, validator, amount);
+  
+  console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                   UNDELEGATION STARTED                       ║
+╠══════════════════════════════════════════════════════════════╣
+║ Amount: ${result.displayAmount.padEnd(52)}║
+║ Validator: ${validator.slice(0, 50).padEnd(50)}║
+║ Tx Hash: ${result.txHash.slice(0, 52).padEnd(52)}║
+║ ⚠️  Tokens will be available in ~22 days                     ║
+╚══════════════════════════════════════════════════════════════╝
+`);
+}
+
+async function redelegateCommand() {
+  const fromValidator = args[1];
+  const toValidator = args[2];
+  const amount = args[3];
+  
+  if (!fromValidator || !toValidator || !amount) {
+    console.error('Usage: clawpurse redelegate <from-validator> <to-validator> <amount>');
+    console.error('Example: clawpurse redelegate neutarovaloper1abc... neutarovaloper1xyz... 100');
+    process.exit(1);
+  }
+  
+  const keystorePath = getArg('--keystore');
+  const password = await promptPassword('Enter password: ');
+  const { wallet, address } = await loadKeystore(password, keystorePath);
+  
+  console.log(`Redelegating ${amount} NTMPI...`);
+  
+  const result = await redelegate(wallet, address, fromValidator, toValidator, amount);
+  
+  console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                  REDELEGATION SUCCESSFUL                     ║
+╠══════════════════════════════════════════════════════════════╣
+║ Amount: ${result.displayAmount.padEnd(52)}║
+║ From: ${fromValidator.slice(0, 55).padEnd(55)}║
+║ To: ${toValidator.slice(0, 57).padEnd(57)}║
+║ Tx Hash: ${result.txHash.slice(0, 52).padEnd(52)}║
+╚══════════════════════════════════════════════════════════════╝
+`);
+}
+
+async function delegationsCommand() {
+  const keystorePath = getArg('--keystore');
+  const address = await getKeystoreAddress(keystorePath);
+  
+  if (!address) {
+    console.error('Error: No wallet found. Run "clawpurse init" first');
+    process.exit(1);
+  }
+  
+  console.log(`Fetching delegations for ${address}...`);
+  
+  const result = await getDelegations(address);
+  
+  if (result.delegations.length === 0) {
+    console.log('\nNo active delegations found.');
+    return;
+  }
+  
+  console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                    CURRENT DELEGATIONS                       ║
+╠══════════════════════════════════════════════════════════════╣`);
+  
+  for (const d of result.delegations) {
+    const moniker = (d.validatorMoniker || 'Unknown').slice(0, 20).padEnd(20);
+    const amount = d.displayAmount.padEnd(20);
+    console.log(`║ ${moniker} ${amount}               ║`);
+  }
+  
+  console.log(`╠══════════════════════════════════════════════════════════════╣
+║ Total Staked: ${result.totalStakedDisplay.padEnd(46)}║
+╚══════════════════════════════════════════════════════════════╝`);
+}
+
+async function validatorsCommand() {
+  console.log('Fetching active validators...');
+  
+  const validators = await getValidators();
+  
+  console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                    ACTIVE VALIDATORS                         ║
+╠══════════════════════════════════════════════════════════════╣
+║ Moniker              Commission  Operator Address            ║
+╠══════════════════════════════════════════════════════════════╣`);
+  
+  for (const v of validators.slice(0, 20)) {
+    const moniker = v.moniker.slice(0, 18).padEnd(18);
+    const commission = v.commission.padEnd(10);
+    const addr = v.operatorAddress.slice(0, 30);
+    console.log(`║ ${moniker} ${commission} ${addr}...║`);
+  }
+  
+  if (validators.length > 20) {
+    console.log(`║ ... and ${validators.length - 20} more validators                              ║`);
+  }
+  
+  console.log(`╚══════════════════════════════════════════════════════════════╝`);
+}
+
+async function unbondingCommand() {
+  const keystorePath = getArg('--keystore');
+  const address = await getKeystoreAddress(keystorePath);
+  
+  if (!address) {
+    console.error('Error: No wallet found. Run "clawpurse init" first');
+    process.exit(1);
+  }
+  
+  console.log(`Fetching unbonding delegations for ${address}...`);
+  
+  const result = await getUnbondingDelegations(address);
+  
+  if (result.entries.length === 0) {
+    console.log('\nNo pending unbonding delegations.');
+    return;
+  }
+  
+  console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                  UNBONDING DELEGATIONS                       ║
+╠══════════════════════════════════════════════════════════════╣`);
+  
+  for (const e of result.entries) {
+    const amount = e.displayAmount.padEnd(20);
+    const completion = new Date(e.completionTime).toLocaleDateString();
+    console.log(`║ ${amount} completes ${completion.padEnd(30)}║`);
+  }
+  
+  console.log(`╚══════════════════════════════════════════════════════════════╝`);
+}
+
 // Main
 async function main() {
   if (!command || command === '--help' || command === '-h') {
@@ -590,6 +797,24 @@ async function main() {
         break;
       case 'allowlist':
         await handleAllowlistCommand();
+        break;
+      case 'stake':
+        await stakeCommand();
+        break;
+      case 'unstake':
+        await unstakeCommand();
+        break;
+      case 'redelegate':
+        await redelegateCommand();
+        break;
+      case 'delegations':
+        await delegationsCommand();
+        break;
+      case 'validators':
+        await validatorsCommand();
+        break;
+      case 'unbonding':
+        await unbondingCommand();
         break;
       default:
         console.error(`Unknown command: ${command}`);
