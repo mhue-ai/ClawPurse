@@ -1,6 +1,6 @@
 # ClawPurse
 
-Local Timpi/NTMPI wallet for OpenClaw nodes on the Neutaro chain.
+Local Timpi/NTMPI wallet for agentic AI (including OpenClaw), automation scripts, and individual users on the Neutaro chain.
 
 ## Features
 
@@ -10,7 +10,7 @@ Local Timpi/NTMPI wallet for OpenClaw nodes on the Neutaro chain.
 - 📝 **Transaction receipts** – Local audit trail for all sends
 - ✅ **Destination allowlists** – Control which addresses can receive funds
 - 🔌 **Programmatic API** – Import and use in scripts and other applications
-- 📋 **OpenClaw skill** – Installable as an OpenClaw node skill
+- 🤖 **Agent-ready** – Designed for AI agents, automation, and human operators alike
 
 ## Installation
 
@@ -170,7 +170,7 @@ export const KEYSTORE_CONFIG = {
 - **[OPERATOR-GUIDE.md](./docs/OPERATOR-GUIDE.md)** – Complete setup and usage guide
 - **[TRUST-MODEL.md](./docs/TRUST-MODEL.md)** – Security model and transaction verification
 - **[ALLOWLIST.md](./docs/ALLOWLIST.md)** – Destination allowlist configuration
-- **[SKILL.md](./SKILL.md)** – OpenClaw skill integration
+- **[SKILL.md](./SKILL.md)** – AI agent integration guide
 
 ## Security Notes
 

@@ -1,6 +1,6 @@
 # ClawPurse Trust Model
 
-This document explains how OpenClaw nodes and operators can establish trust in ClawPurse wallets and verify the integrity of transactions.
+This document explains how AI agents, automation systems, and individual operators can establish trust in ClawPurse wallets and verify the integrity of transactions.
 
 ## Core Principles
 

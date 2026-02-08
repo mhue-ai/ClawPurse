@@ -1,6 +1,6 @@
 # ClawPurse Operator Guide
 
-Complete guide for operators running ClawPurse on OpenClaw nodes.
+Complete guide for operators running ClawPurse—whether you're integrating with agentic AI (including OpenClaw), automation scripts, or using it as an individual.
 
 ## Prerequisites
 

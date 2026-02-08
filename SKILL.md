@@ -1,10 +1,10 @@
 # ClawPurse Skill
 
-Local Timpi/NTMPI wallet for OpenClaw nodes on the Neutaro chain.
+Local Timpi/NTMPI wallet for agentic AI, automation scripts, and individual users on the Neutaro chain.
 
 ## Overview
 
-ClawPurse provides cryptocurrency wallet functionality for OpenClaw agents, enabling autonomous handling of NTMPI tokens on the Neutaro blockchain.
+ClawPurse provides cryptocurrency wallet functionality for AI agents (including OpenClaw), automation pipelines, and human operators—enabling autonomous or manual handling of NTMPI tokens on the Neutaro blockchain.
 
 ## Capabilities
 
