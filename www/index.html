@@ -116,7 +116,6 @@
     <div class="cta">
       <a class="primary" href="https://github.com/mhue-ai/ClawPurse" target="_blank" rel="noopener">View on GitHub</a>
       <a class="secondary" href="https://github.com/mhue-ai/ClawPurse/blob/main/README.md" target="_blank" rel="noopener">Read the docs</a>
-      <a class="secondary" href="#staking">See the treasury model</a>
       <a class="primary" style="background: linear-gradient(135deg, var(--cyan-bright), #00b8a9); color: var(--bg-deep); box-shadow: 0 10px 30px rgba(0,229,204,0.35);" href="https://drip.clawpurse.ai" target="_blank" rel="noopener">Visit Timpi Drip Faucet</a>
     </div>
   </header>
@@ -153,39 +152,6 @@
           <p>Delegate NTMPI to validators, earn rewards, and manage delegations—all from the CLI or programmatic API.</p>
         </li>
       </ul>
-    </section>
-
-    <section id="staking">
-      <h2>Staking Treasury Automation</h2>
-      <p style="color: var(--text-secondary); max-width: 760px;">
-        ClawPurse keeps faucet treasuries and validator payouts solvent by staking the bulk of funds (Timpi Drip runs a 95k / 5k staked-to-liquid split with a 17% APY assumption).
-        Model your DePIN runway, schedule restakes, and surface the 22-day Neutaro unbonding clock for every delegation. Want to see it live? <a href="https://drip.clawpurse.ai" target="_blank" style="color: var(--cyan-bright);">Timpi Drip</a> is the reference faucet powered entirely by this stack.
-      </p>
-      <div class="split-grid">
-        <div class="stat-card">
-          <h3>Yield-aware guardrails</h3>
-          <p>Define how much of the pool stays liquid vs. staked, and let ClawPurse warn you before payouts exceed the buffer.</p>
-          <ul style="padding-left:18px; color: var(--text-secondary);">
-            <li>Staking split preview w/ 30-day runway math</li>
-            <li>Validator quality signals (commission + uptime)</li>
-            <li>Unbonding timer with reminders</li>
-          </ul>
-        </div>
-        <div class="stat-card">
-          <h3>Operator checklist</h3>
-          <p>Ship new treasury policies quickly—ClawPurse generates documentation straight into your repo.</p>
-          <ul style="padding-left:18px; color: var(--text-secondary);">
-            <li>Allowlist diffs &amp; approvals (docs/ALLOWLIST.md)</li>
-            <li>Stake/unstake receipts for auditors</li>
-            <li>CLI + JSON exports for dashboards</li>
-          </ul>
-        </div>
-        <div class="stat-card">
-          <h3>DePIN-native hooks</h3>
-          <p>Use the Node.js API to rebalance stakes from cron jobs, refill faucets, or pipe metrics into Grafana.</p>
-          <code>await wallet.delegate(validator, amount)</code>
-        </div>
-      </div>
     </section>
 
     <section id="agents">
