@@ -99,6 +99,21 @@ export async function saveKeystore(
   password: string,
   keystorePath?: string
 ): Promise<string> {
+  // Import security utilities
+  const { validatePassword, validateMnemonic } = await import('./security.js');
+  
+  // Validate password strength
+  const passwordValidation = validatePassword(password);
+  if (!passwordValidation.valid) {
+    throw new Error(`Weak password: ${passwordValidation.reason}`);
+  }
+  
+  // Validate mnemonic
+  const mnemonicValidation = validateMnemonic(mnemonic);
+  if (!mnemonicValidation.valid) {
+    throw new Error(`Invalid mnemonic: ${mnemonicValidation.reason}`);
+  }
+  
   const filePath = keystorePath || getDefaultKeystorePath();
   
   // Ensure directory exists

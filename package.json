@@ -12,9 +12,20 @@
     "build": "tsc",
     "dev": "ts-node --esm src/cli.ts",
     "start": "node dist/cli.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
+    "test:e2e": "bash tests/e2e/cli-tests.sh",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:ci": "jest --ci --coverage --maxWorkers=2",
     "lint": "eslint src/",
-    "clean": "rm -rf dist/"
+    "lint:fix": "eslint src/ --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist/",
+    "pretest": "npm run type-check",
+    "security-check": "npm audit"
   },
   "repository": {
     "type": "git",
@@ -41,6 +52,8 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@jest/globals": "^30.2.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^25.2.1",
     "@types/yargs": "^17.0.35",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
@@ -48,7 +61,10 @@
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-security": "^3.0.1",
+    "jest": "^30.2.0",
     "prettier": "^3.8.1",
+    "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"

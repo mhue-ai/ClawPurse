@@ -109,6 +109,27 @@ export async function send(
   amount: string,
   options: SendOptions = {}
 ): Promise<SendResult> {
+  // Import security utilities
+  const { validateAddress, validateAmount, validateMemo } = await import('./security.js');
+  
+  // Validate inputs
+  const addressValidation = validateAddress(toAddress);
+  if (!addressValidation.valid) {
+    throw new Error(`Invalid recipient address: ${addressValidation.reason}`);
+  }
+  
+  const amountValidation = validateAmount(amount);
+  if (!amountValidation.valid) {
+    throw new Error(`Invalid amount: ${amountValidation.reason}`);
+  }
+  
+  if (options.memo) {
+    const memoValidation = validateMemo(options.memo);
+    if (!memoValidation.valid) {
+      throw new Error(`Invalid memo: ${memoValidation.reason}`);
+    }
+  }
+  
   const microAmount = parseAmount(amount);
   
   // Safety checks
@@ -124,11 +145,6 @@ export async function send(
       `Amount exceeds ${formatAmount(BigInt(KEYSTORE_CONFIG.requireConfirmAbove))} - ` +
       `confirmation required. Pass skipConfirmation: true to proceed.`
     );
-  }
-  
-  // Validate destination address
-  if (!toAddress.startsWith(NEUTARO_CONFIG.bech32Prefix)) {
-    throw new Error(`Invalid address prefix. Expected ${NEUTARO_CONFIG.bech32Prefix}, got ${toAddress.slice(0, 8)}...`);
   }
   
   const client = await getSigningClient(wallet);
