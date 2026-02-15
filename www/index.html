@@ -3,327 +3,590 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClawPurse | Timpi Wallet & Treasury Automation for DePIN + Agents</title>
-  <meta name="description" content="ClawPurse is the local Timpi / NTMPI wallet that automates staking treasuries for DePIN operators and agentic AI workflows with encrypted guardrails.">
+  <title>ClawPurse — NTMPI Micropayment Ecosystem for AI Agents &amp; DePIN</title>
+  <meta name="description" content="ClawPurse is an open-source micropayment ecosystem on the Neutaro blockchain. Local NTMPI wallet with encrypted guardrails, HTTP 402 payment gateway for API monetization, and agent-ready staking — built for agentic AI, DePIN operators, and machine-to-machine commerce.">
+  <meta name="keywords" content="ClawPurse, NTMPI, micropayments, Neutaro, HTTP 402, payment gateway, agentic AI, DePIN, blockchain wallet, machine-to-machine payments, Timpi, staking, API monetization, crypto micropayments, AI agent commerce">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://clawpurse.ai/">
+  <meta property="og:title" content="ClawPurse — NTMPI Micropayment Ecosystem for AI Agents & DePIN">
+  <meta property="og:description" content="Local NTMPI wallet + HTTP 402 payment gateway. Encrypted guardrails, staking automation, and API monetization for agentic AI and machine-to-machine commerce on Neutaro.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://clawpurse.ai/">
+  <meta property="og:site_name" content="ClawPurse">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ClawPurse — NTMPI Micropayment Ecosystem for AI Agents & DePIN">
+  <meta name="twitter:description" content="Local NTMPI wallet + HTTP 402 payment gateway for agentic AI and machine-to-machine commerce on Neutaro.">
+  <meta name="author" content="Mhue">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      color-scheme: dark;
-      --bg-deep: #050810;
-      --bg-surface: #0a0f1a;
-      --bg-elevated: #111827;
-      --coral-bright: #ff4d4d;
-      --coral-mid: #e63946;
-      --cyan-bright: #00e5cc;
-      --cyan-glow: rgba(0, 229, 204, 0.35);
-      --text-primary: #f0f4ff;
-      --text-secondary: #8892b0;
-      --border-subtle: rgba(136, 146, 176, 0.2);
-      --border-accent: rgba(255, 77, 77, 0.35);
-      --font-display: 'Space Grotesk', 'Clash Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
-      background: var(--bg-deep);
+      --bg-void: #030711;
+      --bg-surface: #0a1020;
+      --bg-card: #0f1629;
+      --bg-elevated: #151d33;
+      --coral: #ff4d4d;
+      --coral-dim: rgba(255, 77, 77, 0.12);
+      --cyan: #00e5cc;
+      --cyan-dim: rgba(0, 229, 204, 0.10);
+      --cyan-glow: rgba(0, 229, 204, 0.30);
+      --gold: #f0b429;
+      --gold-dim: rgba(240, 180, 41, 0.10);
+      --text-1: #edf2ff;
+      --text-2: #8892b0;
+      --text-3: #4a5568;
+      --border: rgba(136, 146, 176, 0.14);
+      --border-bright: rgba(136, 146, 176, 0.25);
+      --font-body: 'Outfit', system-ui, -apple-system, sans-serif;
+      --font-mono: 'Fira Code', 'SF Mono', monospace;
     }
-    * { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: var(--font-display);
-      background: radial-gradient(circle at 20% 20%, var(--cyan-glow), transparent 45%),
-                  radial-gradient(circle at 80% 0%, rgba(255,77,77,0.18), transparent 55%),
-                  var(--bg-deep);
-      color: var(--text-primary);
+      font-family: var(--font-body); background: var(--bg-void);
+      color: var(--text-1); min-height: 100vh; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
-    header {
-      padding: 64px 24px 32px;
-      text-align: center;
+    .bg-ambient {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 0%, var(--cyan-glow), transparent),
+        radial-gradient(ellipse 60% 40% at 90% 10%, rgba(255,77,77,0.12), transparent),
+        radial-gradient(ellipse 50% 60% at 50% 100%, rgba(240,180,41,0.05), transparent),
+        var(--bg-void);
     }
-    h1 { font-size: clamp(2.8rem, 6vw, 4rem); margin: 0 0 16px; }
-    p.lede { font-size: 1.2rem; color: var(--text-secondary); margin: 0 auto; max-width: 640px; }
-    main { padding: 0 24px 96px; max-width: 960px; margin: 0 auto; }
-    section { margin-top: 56px; }
-    h2 { font-size: 1.6rem; margin-bottom: 12px; color: var(--coral-bright); }
-    ul.features { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-    ul.features li { border: 1px solid var(--border-subtle); border-radius: 16px; padding: 18px; background: var(--bg-elevated); box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
-    ul.features h3 { margin: 0 0 6px; font-size: 1.1rem; color: var(--cyan-bright); }
-    .timpi-grid { display: flex; flex-wrap: wrap; gap: 24px; }
-    .info-card { flex: 1 1 320px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 18px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
-    .info-card h3 { margin-top: 0; color: var(--cyan-bright); }
-    .info-card ul { padding-left: 18px; margin: 0 0 12px; color: var(--text-secondary); }
+    .container { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ---- Tags ---- */
+    .tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 999px; font-size: 0.72rem;
+      font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .tag--cyan { background: var(--cyan-dim); color: var(--cyan); }
+    .tag--coral { background: var(--coral-dim); color: var(--coral); }
+    .tag--gold { background: var(--gold-dim); color: var(--gold); }
+
+    /* ---- Buttons ---- */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 26px; border-radius: 28px;
+      font-family: var(--font-body); font-size: 0.9rem; font-weight: 600;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .btn:hover { transform: translateY(-2px); text-decoration: none; }
+    .btn--coral { background: linear-gradient(135deg, var(--coral), #cc2d24); color: #fff; box-shadow: 0 8px 28px rgba(255,77,77,0.3); }
+    .btn--cyan { background: linear-gradient(135deg, var(--cyan), #00b8a9); color: var(--bg-void); box-shadow: 0 8px 28px rgba(0,229,204,0.3); }
+    .btn--ghost { background: transparent; color: var(--text-1); border: 1px solid var(--border-bright); }
+    .btn--ghost:hover { border-color: var(--text-2); }
+
+    /* ---- Cards ---- */
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 26px;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .card:hover { border-color: var(--border-bright); box-shadow: 0 16px 48px rgba(0,0,0,0.3); }
+    .card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }
+    .card p { color: var(--text-2); font-size: 0.92rem; line-height: 1.65; }
+
+    /* ---- Hero ---- */
+    .hero { padding: 88px 0 56px; text-align: center; }
+    .hero__eyebrow { font-size: 0.9rem; color: var(--text-2); margin-bottom: 20px; letter-spacing: 0.02em; }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+      font-weight: 800; line-height: 1.1; letter-spacing: -0.03em;
+    }
+    .hero h1 .hl { background: linear-gradient(135deg, var(--cyan), #00b8a9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero__sub { margin: 18px auto 0; max-width: 660px; font-size: 1.12rem; color: var(--text-2); line-height: 1.7; }
+    .hero__actions { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+    /* ---- Ecosystem banner ---- */
+    .eco-banner {
+      margin-top: 56px; padding: 40px 0;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .eco-banner__inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .eco-banner .product {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px; position: relative; overflow: hidden;
+      transition: border-color 0.25s, box-shadow 0.3s;
+    }
+    .eco-banner .product:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
+    .eco-banner .product--wallet { border-color: rgba(0,229,204,0.2); }
+    .eco-banner .product--wallet:hover { border-color: rgba(0,229,204,0.4); }
+    .eco-banner .product--gateway { border-color: rgba(255,77,77,0.2); }
+    .eco-banner .product--gateway:hover { border-color: rgba(255,77,77,0.4); }
+    .eco-banner .product__glow {
+      position: absolute; top: -60px; right: -60px;
+      width: 180px; height: 180px; border-radius: 50%;
+      filter: blur(60px); opacity: 0.15; pointer-events: none;
+    }
+    .eco-banner .product--wallet .product__glow { background: var(--cyan); }
+    .eco-banner .product--gateway .product__glow { background: var(--coral); }
+    .eco-banner .product h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; position: relative; }
+    .eco-banner .product p { color: var(--text-2); font-size: 0.95rem; line-height: 1.65; margin-bottom: 20px; position: relative; }
+    .eco-banner .product .btn { position: relative; }
+
+    /* ---- Section ---- */
+    .section { padding: 60px 0; }
+    .section__title { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; }
+    .section__desc { color: var(--text-2); max-width: 640px; font-size: 1.02rem; margin-bottom: 36px; }
+
+    /* ---- Feature grid ---- */
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 16px; }
+
+    /* ---- Flow diagram ---- */
+    .flow-box {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 28px; overflow-x: auto;
+      box-shadow: 0 20px 56px rgba(0,0,0,0.35);
+    }
+    .flow-box pre {
+      font-family: var(--font-mono); font-size: 0.78rem;
+      line-height: 1.7; color: var(--text-2); white-space: pre; margin: 0;
+    }
+    .flow-box .c-coral { color: var(--coral); font-weight: 600; }
+    .flow-box .c-cyan { color: var(--cyan); }
+    .flow-box .c-gold { color: var(--gold); }
+    .flow-box .c-dim { color: var(--text-3); }
+
+    /* ---- Code ---- */
+    code { font-family: var(--font-mono); font-size: 0.85rem; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 6px; padding: 2px 6px; }
+    pre { font-family: var(--font-mono); background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; overflow-x: auto; font-size: 0.82rem; line-height: 1.65; color: var(--text-2); }
+
+    /* ---- Split grid ---- */
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+    /* ---- Info cards (Timpi) ---- */
+    .info-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 26px;
+    }
+    .info-card h3 { color: var(--cyan); margin-top: 0; margin-bottom: 10px; }
+    .info-card ul, .info-card ol { padding-left: 18px; color: var(--text-2); margin: 0 0 12px; }
     .info-card li { margin-bottom: 6px; }
-    .tag { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; letter-spacing: 0.03em; background: rgba(0,229,204,0.1); color: var(--cyan-bright); margin-bottom: 12px; }
-    .split-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-    .stat-card { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 18px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
-    .stat-card h3 { margin: 0 0 8px; color: var(--cyan-bright); }
-    .stat-card p { margin: 0 0 12px; color: var(--text-secondary); }
-    code, pre { font-family: var(--font-mono); background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 4px 6px; }
-    pre { padding: 18px; overflow-x: auto; background: var(--bg-elevated); }
-    .cta {
-      margin-top: 64px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      justify-content: center;
+
+    /* ---- Donate ---- */
+    .donate {
+      text-align: center; padding: 32px;
+      background: var(--bg-card); border: 1px solid rgba(255,77,77,0.2);
+      border-radius: 18px; box-shadow: 0 20px 56px rgba(0,0,0,0.35);
     }
-    .cta a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px 28px;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    .donate__addr {
+      display: inline-block; margin-top: 12px; padding: 12px 18px;
+      background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+      border-radius: 8px; font-family: var(--font-mono); font-size: 0.88rem;
+      word-break: break-all;
     }
-    .cta .primary { background: linear-gradient(135deg, var(--coral-bright), var(--coral-mid)); color: var(--bg-deep); box-shadow: 0 10px 30px rgba(255,77,77,0.35); }
-    .cta .secondary { border: 1px solid var(--border-subtle); color: var(--text-primary); background: transparent; }
-    .cta a:hover { transform: translateY(-2px); }
-    footer {
-      text-align: center;
-      padding: 48px 24px 64px;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
+
+    /* ---- Footer ---- */
+    footer { text-align: center; padding: 48px 24px 64px; color: var(--text-3); font-size: 0.85rem; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 14px; }
+    .footer-links a { color: var(--text-2); }
+    .footer-links a:hover { color: var(--text-1); }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 720px) {
+      .eco-banner__inner { grid-template-columns: 1fr; }
+      .split { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+      .hero { padding: 60px 0 40px; }
     }
-    @media (max-width: 600px) {
-      ul.features { grid-template-columns: 1fr; }
-      header { padding-top: 48px; }
-    }
+
+    /* ---- Reveal animation ---- */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
   </style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "ClawPurse",
+    "alternateName": "ClawPurse Micropayment Ecosystem",
     "operatingSystem": "Linux, macOS, Windows",
     "applicationCategory": "FinanceApplication",
+    "applicationSubCategory": "Cryptocurrency Wallet",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-    "description": "Local Timpi / NTMPI wallet with staking treasury automation, DePIN guardrails, and agentic AI integrations.",
-    "softwareVersion": "2.0.0",
-    "keywords": "Timpi wallet, NTMPI staking, DePIN treasury automation, agentic AI wallet"
+    "description": "Open-source NTMPI micropayment ecosystem: local wallet with encrypted guardrails, HTTP 402 payment gateway for API monetization, staking automation, and agent-ready integrations on the Neutaro blockchain.",
+    "softwareVersion": "2.0.1",
+    "programmingLanguage": ["TypeScript", "JavaScript"],
+    "codeRepository": "https://github.com/mhue-ai/ClawPurse",
+    "license": "https://opensource.org/licenses/MIT",
+    "author": {
+      "@type": "Person",
+      "name": "Mhue",
+      "url": "https://github.com/mhue-ai"
+    },
+    "keywords": "NTMPI wallet, micropayments, HTTP 402, payment gateway, agentic AI, DePIN, Neutaro, Timpi, blockchain, machine-to-machine payments"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is ClawPurse?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ClawPurse is an open-source micropayment ecosystem on the Neutaro blockchain. It includes a local NTMPI wallet with encrypted keystores and guardrails, an HTTP 402 payment gateway for API monetization, and staking automation — all designed for agentic AI, DePIN operators, and machine-to-machine commerce."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the ClawPurse 402 Gateway?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The ClawPurse 402 Gateway is an HTTP reverse proxy that implements the 402 Payment Required status code. It gates any API behind NTMPI micropayments, supporting pay-per-request and prepaid balance flows. AI agents can autonomously handle the payment flow without human intervention."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do AI agents use ClawPurse for micropayments?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AI agents import ClawPurse's programmatic API to send payments, check balances, and manage staking. When hitting a 402-gated API, agents parse the invoice, pay on-chain via the wallet, and retry with the payment proof header — all autonomously without human intervention."
+        }
+      }
+    ]
   }
   </script>
 </head>
 <body>
-  <header>
-    <p>🪙 Agentic AI Wallet</p>
-    <h1>ClawPurse 2.0</h1>
-    <p class="lede">
-      A local-only Timpi / NTMPI wallet for DePIN operators, validator treasuries, and agentic AI (including OpenClaw). Generate, guard, and verify transactions with
-      encrypted keystores, staking automation, destination allowlists, and auditable receipts &mdash; no third-party custody required.
+  <div class="bg-ambient"></div>
+  <a href="#main" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Skip to main content</a>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero container">
+    <p class="hero__eyebrow">Open-source micropayment infrastructure on Neutaro</p>
+    <h1>ClawPurse<br><span class="hl">Micropayment Ecosystem</span></h1>
+    <p class="hero__sub">
+      A local NTMPI wallet and HTTP&nbsp;402 payment gateway for DePIN operators, validator treasuries,
+      and agentic AI. Send, stake, gate APIs, and verify transactions on-chain &mdash;
+      with encrypted guardrails and zero third-party custody.
     </p>
-    <div class="cta">
-      <a class="primary" href="https://github.com/mhue-ai/ClawPurse" target="_blank" rel="noopener">View on GitHub</a>
-      <a class="secondary" href="https://github.com/mhue-ai/ClawPurse/blob/main/README.md" target="_blank" rel="noopener">Read the docs</a>
-      <a class="secondary" href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md" target="_blank" rel="noopener" style="border-color: var(--cyan-bright); color: var(--cyan-bright);">
-        🤖 AI Agent Guide
-      </a>
-      <a class="primary" style="background: linear-gradient(135deg, var(--cyan-bright), #00b8a9); color: var(--bg-deep); box-shadow: 0 10px 30px rgba(0,229,204,0.35);" href="https://drip.clawpurse.ai" target="_blank" rel="noopener">Visit Timpi Drip Faucet</a>
-    </div>
+    <nav class="hero__actions" aria-label="Primary actions">
+      <a class="btn btn--coral" href="https://github.com/mhue-ai/ClawPurse" target="_blank" rel="noopener">Wallet on GitHub</a>
+      <a class="btn btn--cyan" href="https://gateway.clawpurse.ai" target="_blank" rel="noopener">402 Gateway</a>
+      <a class="btn btn--ghost" href="https://drip.clawpurse.ai" target="_blank" rel="noopener">Timpi Drip Faucet</a>
+      <a class="btn btn--ghost" href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md" target="_blank" rel="noopener">AI Agent Guide</a>
+    </nav>
   </header>
-  <main>
-    <section>
-      <h2>Key Features</h2>
-      <ul class="features">
-        <li>
-          <h3>Encrypted Keystore</h3>
-          <p>AES-256-GCM with scrypt key derivation keeps mnemonics locked to the local node.</p>
-        </li>
-        <li>
-          <h3>Guardrail Wizard</h3>
-          <p>Interactive setup for send limits, confirmation thresholds, and allowlist enforcement.</p>
-        </li>
-        <li>
-          <h3>Destination Allowlists</h3>
-          <p>Enforce or document trusted addresses with per-destination caps, memos, and notes.</p>
-        </li>
-        <li>
-          <h3>Transaction Receipts</h3>
-          <p>Every send is recorded locally with tx hash, block height, memo, and guardrail status.</p>
-        </li>
-        <li>
-          <h3>Programmatic API</h3>
-          <p>Import ClawPurse functions in agents or scripts for automated payouts and balance checks.</p>
-        </li>
-        <li>
-          <h3>Agent-Ready</h3>
-          <p>Designed for AI agents, automation pipelines, and human operators alike—with full programmatic control.</p>
-        </li>
-        <li>
-          <h3>Staking (v2.0)</h3>
-          <p>Delegate NTMPI to validators, earn rewards, and manage delegations—all from the CLI or programmatic API.</p>
-        </li>
-      </ul>
-    </section>
 
-    <section id="agents">
-      <h2>OpenClaw &amp; Agentic AI Workflows</h2>
-      <p style="color: var(--text-secondary); max-width: 760px;">
-        ClawPurse was built inside the OpenClaw ecosystem, so autonomous agents get first-class wallet access with human-grade guardrails.
-        Proof-of-work faucets, bounty payouts, or automated restakes all run from the same local keystore.
-      </p>
-
-      <!-- AI Agent Integration Reference Block -->
-      <div style="background: linear-gradient(135deg, rgba(0,229,204,0.12), rgba(255,77,77,0.08)); border: 2px solid var(--cyan-bright); border-radius: 20px; padding: 28px; margin: 32px 0; box-shadow: 0 20px 60px rgba(0,229,204,0.25);">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-          <span style="font-size: 2rem;">🤖</span>
-          <h3 style="margin: 0; color: var(--cyan-bright); font-size: 1.4rem;">AI Agents & Automation</h3>
-        </div>
-        <p style="color: var(--text-primary); margin: 0 0 20px; font-size: 1.05rem;">
-          For OpenClaw agents, automation scripts, and AI assistants, view the complete integration guide:
+  <!-- ============ ECOSYSTEM PRODUCTS ============ -->
+  <div class="eco-banner container reveal">
+    <div class="eco-banner__inner">
+      <div class="product product--wallet">
+        <div class="product__glow"></div>
+        <span class="tag tag--cyan">Wallet</span>
+        <h3 style="color: var(--cyan);">ClawPurse Wallet</h3>
+        <p>
+          Local-only NTMPI wallet with AES-256 encrypted keystores, destination allowlists,
+          staking automation, and a guardrail wizard. CLI and programmatic API for agents,
+          scripts, and human operators.
         </p>
-        <div style="background: var(--bg-deep); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 20px; margin-bottom: 16px;">
-          <p style="margin: 0 0 12px; color: var(--text-secondary); font-size: 0.95rem;">
-            <strong style="color: var(--cyan-bright);">📄 SKILL.md</strong> — Complete agent integration documentation
-          </p>
-          <a href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md" 
-             target="_blank" 
-             rel="noopener"
-             style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(135deg, var(--cyan-bright), #00b8a9); color: var(--bg-deep); font-weight: 600; border-radius: 25px; text-decoration: none; transition: transform 0.2s ease; box-shadow: 0 8px 24px rgba(0,229,204,0.35);"
-             onmouseover="this.style.transform='translateY(-2px)'" 
-             onmouseout="this.style.transform='translateY(0)'">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-            View SKILL.md on GitHub
-          </a>
-          <p style="margin: 16px 0 0; font-size: 0.9rem; color: var(--text-secondary);">
-            Direct link: <a href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md" target="_blank" rel="noopener" style="color: var(--cyan-bright); text-decoration: underline;">github.com/mhue-ai/ClawPurse/blob/main/SKILL.md</a>
-          </p>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 0.9rem;">
-          <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary);">
-            <span style="color: var(--cyan-bright);">✓</span> API reference
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary);">
-            <span style="color: var(--cyan-bright);">✓</span> Code examples
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary);">
-            <span style="color: var(--cyan-bright);">✓</span> Security best practices
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary);">
-            <span style="color: var(--cyan-bright);">✓</span> Integration patterns
-          </div>
-        </div>
+        <a class="btn btn--cyan" href="https://github.com/mhue-ai/ClawPurse" target="_blank" rel="noopener" style="font-size:0.85rem; padding:10px 20px;">
+          View Wallet Repo &rarr;
+        </a>
       </div>
-
-      <div class="split-grid">
-        <div class="stat-card">
-          <h3>Skill-ready</h3>
-          <p>The ClawPurse OpenClaw skill wraps the CLI for drop-in agent usage. Pipe receipts straight back to chat.</p>
-          <code>sessions_spawn("Send 1 NTMPI via ClawPurse")</code>
-        </div>
-        <div class="stat-card">
-          <h3>Priority lanes for agents</h3>
-          <p>Timpi Drip gives OpenClaw-authenticated agents a higher throughput drip. Reuse the same attestation logic for your dApps.</p>
-        </div>
-        <div class="stat-card">
-          <h3>Proof-of-work over CAPTCHA</h3>
-          <p>Keep AI-compatible surfaces open. ClawPurse ships the PoW solver + API that powers Timpi Drip&rsquo;s agent-friendly faucet.</p>
-        </div>
+      <div class="product product--gateway">
+        <div class="product__glow"></div>
+        <span class="tag tag--coral">Gateway</span>
+        <h3 style="color: var(--coral);">ClawPurse 402 Gateway</h3>
+        <p>
+          HTTP reverse proxy implementing <strong>402 Payment Required</strong>. Gate any API behind
+          NTMPI micropayments with pay-per-request invoicing, prepaid balances, on-chain verification,
+          and route-level pricing.
+        </p>
+        <a class="btn btn--coral" href="https://gateway.clawpurse.ai" target="_blank" rel="noopener" style="font-size:0.85rem; padding:10px 20px;">
+          View Gateway Site &rarr;
+        </a>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <section>
-      <h2>Powered by Timpi</h2>
-      <p style="color: var(--text-secondary); max-width: 760px;">
-        ClawPurse is the wallet companion to <a href="https://timpi.io" target="_blank" rel="noopener" style="color: var(--cyan-bright); text-decoration: none;">Timpi</a>&rsquo;s independent search network.
-        Timpi rewires how data is indexed and shared by combining privacy-first search, an open Data API, and DePIN nodes that reward families like ours for running the TAP network.
+  <main class="container" id="main">
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section class="section reveal" id="how-it-works">
+      <span class="tag tag--gold">How It Works</span>
+      <h2 class="section__title">Wallet + Gateway = micropayment stack</h2>
+      <p class="section__desc">
+        An AI agent hits a gated API, receives a 402 invoice, pays on-chain with ClawPurse, and retries with proof.
+        The gateway verifies the transaction on Neutaro and proxies the request upstream. No accounts, no API keys &mdash; just on-chain settlement.
       </p>
-      <div class="timpi-grid">
-        <div class="info-card">
-          <div class="tag">Timpi stack</div>
-          <h3>Search, Data, DePIN</h3>
-          <ul>
-            <li><strong>Search Engine:</strong> censorship-resistant results with no profiling or tracking.</li>
-            <li><strong>Data API:</strong> direct programmatic access to the world&rsquo;s decentralized index.</li>
-            <li><strong>DePIN nodes:</strong> Collectors, Guardians, and GeoCores that earn NTMPI for feeding the index.</li>
-          </ul>
-          <p style="margin:0; color: var(--text-secondary);">Learn how to join the movement at <a href="https://timpi.io" target="_blank" rel="noopener" style="color: var(--cyan-bright);">timpi.io</a>.</p>
+      <div class="flow-box">
+<pre><span class="c-dim">  AI Agent / Script / Browser</span>
+    │
+    ├── <span class="c-cyan">GET /api/data</span> ───────────────────▶  <span class="c-coral">402 Gateway</span>
+    │                                            │
+    │   ◀── <span class="c-coral">402 Payment Required</span> ──────────────┘
+    │       <span class="c-gold">{ invoiceId, amount, address, memo }</span>
+    │
+    ├── <span class="c-cyan">clawpurse send</span> &lt;addr&gt; &lt;amt&gt; --memo &lt;memo&gt;
+    │       <span class="c-dim">(on-chain NTMPI payment via wallet)</span>
+    │
+    ├── <span class="c-cyan">GET /api/data</span> ───────────────────▶  <span class="c-coral">402 Gateway</span>
+    │   Header: <span class="c-gold">X-Payment-Proof: &lt;invoiceId&gt;</span>   │
+    │                                            │
+    │   <span class="c-dim">Gateway verifies tx on Neutaro chain</span>  │
+    │                                            │
+    │   ◀── <span class="c-cyan">200 OK</span> <span class="c-dim">(proxied from upstream)</span> ──┘</pre>
+      </div>
+    </section>
+
+    <!-- ============ WALLET FEATURES ============ -->
+    <section class="section reveal" id="wallet-features">
+      <span class="tag tag--cyan">Wallet</span>
+      <h2 class="section__title">ClawPurse Wallet features</h2>
+      <p class="section__desc">Everything you need to manage NTMPI locally &mdash; with guardrails built for autonomous agents.</p>
+      <div class="features">
+        <div class="card">
+          <h3 style="color:var(--cyan);">Encrypted Keystore</h3>
+          <p>AES-256-GCM with scrypt key derivation. Mnemonics stay locked to the local node.</p>
         </div>
-        <div class="info-card">
-          <div class="tag">Where to get TIMPI / NTMPI</div>
-          <h3>MEXC Spot Pair</h3>
-          <ol style="padding-left: 18px; color: var(--text-secondary);">
-            <li>Sign in to MEXC and deposit USDT (TRC-20 or BEP-20 is fastest).</li>
-            <li>Open the <a href="https://www.mexc.com/exchange/NTMPI_USDT" target="_blank" rel="noopener" style="color: var(--cyan-bright);">NTMPI/USDT</a> spot market.</li>
-            <li>Place a limit or market order, then withdraw to your Neutaro / ClawPurse address.</li>
-          </ol>
-          <h3 style="margin-top:24px;">Gravity Bridge &rarr; Osmosis</h3>
-          <ol style="padding-left: 18px; color: var(--text-secondary);">
-            <li>Bridge USDC/USDT from Ethereum using <a href="https://gravitypulse.app/" target="_blank" rel="noopener" style="color: var(--cyan-bright);">Gravity Pulse</a> or <a href="https://bridge.blockscape.network/#/" target="_blank" rel="noopener" style="color: var(--cyan-bright);">Blockscape</a>.</li>
-            <li>IBC-hop the bridged stablecoin to Osmosis via Keplr or Leap.</li>
-            <li>Swap for NTMPI on Osmosis, then IBC the funds to Neutaro and import them into ClawPurse.</li>
-          </ol>
-          <p style="margin:0; color: var(--text-secondary);">Need the detailed playbook? See <a href="https://github.com/mhue-ai/ClawPurse/blob/main/HOWTOGETTIMPI.md" target="_blank" rel="noopener" style="color: var(--cyan-bright);">HOWTOGETTIMPI.md</a>.</p>
+        <div class="card">
+          <h3 style="color:var(--cyan);">Guardrail Wizard</h3>
+          <p>Interactive setup for send limits, confirmation thresholds, and allowlist enforcement mode.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--cyan);">Destination Allowlists</h3>
+          <p>Enforce or document trusted addresses with per-destination caps, required memos, and notes.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--cyan);">Transaction Receipts</h3>
+          <p>Every send recorded locally with tx hash, block height, memo, and guardrail status for full audit trails.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--cyan);">Staking &amp; Delegations</h3>
+          <p>Delegate, undelegate, redelegate NTMPI. Discover validators, track rewards, and manage the 22-day unbonding period.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--cyan);">Programmatic API</h3>
+          <p>Import wallet functions directly into agents and scripts. <code>send()</code>, <code>getBalance()</code>, <code>delegate()</code> and more.</p>
         </div>
       </div>
     </section>
 
-    <section>
-      <h2>CLI Quick Start</h2>
-      <pre><code>npm install
-npm run build
-npm link
+    <!-- ============ GATEWAY FEATURES ============ -->
+    <section class="section reveal" id="gateway-features">
+      <span class="tag tag--coral">402 Gateway</span>
+      <h2 class="section__title">Monetize any API with NTMPI micropayments</h2>
+      <p class="section__desc">
+        The ClawPurse 402 Gateway sits in front of your upstream API and handles invoicing, on-chain verification,
+        and proxying. Two payment flows, route-level pricing, and a JWT-protected management API.
+      </p>
+      <div class="split">
+        <div class="card">
+          <h3 style="color:var(--coral);">Pay-per-request</h3>
+          <p>Client receives a 402 invoice, pays on-chain, retries with <code>X-Payment-Proof</code> header. Gateway verifies and proxies.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--coral);">Prepaid balance</h3>
+          <p>Client deposits NTMPI once. Subsequent requests use <code>X-Client-Id</code> and the gateway deducts per call &mdash; no repeated on-chain transactions.</p>
+        </div>
+      </div>
+      <div class="features" style="margin-top:16px;">
+        <div class="card">
+          <h3 style="color:var(--coral);">On-chain verification</h3>
+          <p>Queries Neutaro REST API to confirm payment amount, memo, and block confirmations.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--coral);">Route-level pricing</h3>
+          <p>Default price per request plus per-route overrides. Cheap reads, expensive writes.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--coral);">Docker &amp; bare-metal deploy</h3>
+          <p>One-command <code>docker compose up</code> or Ubuntu deploy script. SQLite storage, zero external dependencies.</p>
+        </div>
+      </div>
+      <p style="margin-top:24px; color:var(--text-2);">
+        Full API reference, configuration guide, and agent integration examples at
+        <a href="https://gateway.clawpurse.ai" target="_blank" rel="noopener">gateway.clawpurse.ai</a>
+      </p>
+    </section>
 
+    <!-- ============ AGENT INTEGRATION ============ -->
+    <section class="section reveal" id="agents">
+      <span class="tag tag--gold">Agent Integration</span>
+      <h2 class="section__title">First-class support for agentic AI</h2>
+      <p class="section__desc">
+        ClawPurse was built inside the OpenClaw ecosystem. Autonomous agents get wallet access with human-grade guardrails.
+        Proof-of-work faucets, bounty payouts, 402 API calls, or automated restakes &mdash; all from the same local keystore.
+      </p>
+
+      <div style="background: linear-gradient(135deg, rgba(0,229,204,0.08), rgba(255,77,77,0.05)); border: 1px solid rgba(0,229,204,0.25); border-radius: 18px; padding: 28px; margin-bottom: 28px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+          <span style="font-size: 1.8rem;">&#x1F916;</span>
+          <h3 style="margin: 0; color: var(--cyan); font-size: 1.2rem;">SKILL.md &mdash; Agent Integration Guide</h3>
+        </div>
+        <p style="color: var(--text-2); margin: 0 0 18px; font-size: 0.95rem;">
+          Complete documentation for OpenClaw agents, automation scripts, and AI assistants. Covers the wallet API, 402 gateway flow, security best practices, and integration patterns.
+        </p>
+        <a class="btn btn--cyan" href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md" target="_blank" rel="noopener" style="font-size:0.85rem; padding:10px 22px;">
+          View SKILL.md on GitHub &rarr;
+        </a>
+      </div>
+
+      <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <div class="card">
+          <h3 style="color:var(--gold);">Skill-ready</h3>
+          <p>The OpenClaw skill wraps the CLI for drop-in agent usage. Pipe receipts straight back to chat.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--gold);">Priority faucet lanes</h3>
+          <p>Timpi Drip gives OpenClaw-authenticated agents a higher throughput drip for faster onboarding.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--gold);">PoW over CAPTCHA</h3>
+          <p>Agent-friendly proof-of-work replaces CAPTCHA. ClawPurse ships the PoW solver that powers Timpi&nbsp;Drip.</p>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--gold);">Autonomous 402 flow</h3>
+          <p>Agents detect 402 responses, parse invoices, pay on-chain, and retry with proof &mdash; all programmatically.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CLI QUICK START ============ -->
+    <section class="section reveal" id="quick-start">
+      <span class="tag tag--cyan">Quick Start</span>
+      <h2 class="section__title">Get running in under a minute</h2>
+      <pre><code># Install the wallet
+npm install && npm run build && npm link
+
+# Create a wallet
 clawpurse init --password &lt;pass&gt;
 clawpurse address
 clawpurse balance --password &lt;pass&gt;
+
+# Send tokens
 clawpurse send neutaro1... 1.25 --password &lt;pass&gt;
 
 # Staking (v2.0)
 clawpurse validators
 clawpurse stake neutarovaloper1... 100 --password &lt;pass&gt;
-clawpurse delegations
-</code></pre>
+clawpurse delegations</code></pre>
     </section>
 
-    <section>
-      <h2>Version 2.0 Highlights</h2>
-      <p>Version 2.0.0 adds full staking support to the local wallet stack:</p>
-      <ul>
-        <li><strong>Staking CLI:</strong> <code>stake</code>, <code>unstake</code>, <code>redelegate</code>, <code>delegations</code>, <code>validators</code>, <code>unbonding</code></li>
-        <li><strong>Staking API:</strong> <code>delegate()</code>, <code>undelegate()</code>, <code>redelegate()</code>, <code>getDelegations()</code>, <code>getValidators()</code></li>
-        <li><strong>22-day unbonding:</strong> Full support for Neutaro's unbonding period with clear warnings</li>
-        <li><strong>Validator discovery:</strong> List all active validators with commission rates</li>
-        <li>All v1.0 features: encrypted keystore, send/receive, allowlists, receipts, guardrails</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Version 2.0.1 Enhancements</h2>
-      <p>Version 2.0.1 adds enterprise-grade security and testing infrastructure:</p>
-      <ul>
-        <li><strong>Security Layer:</strong> Password strength enforcement (12+ chars), comprehensive input validation for addresses, amounts, and memos</li>
-        <li><strong>Test Coverage:</strong> 60+ automated tests across unit, integration, and E2E suites with CI/CD pipeline</li>
-        <li><strong>Enhanced API:</strong> Security validation utilities (<code>validatePassword()</code>, <code>validateAddress()</code>, <code>validateAmount()</code>)</li>
-        <li><strong>Developer Tools:</strong> Jest configuration, GitHub Actions workflow, comprehensive test documentation</li>
-        <li><strong>Documentation:</strong> 6 new guides including test plan, security improvements, and quick start</li>
-        <li>All v2.0 features: staking, validators, delegations, plus enhanced security and reliability</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Fuel Future Wallet Work</h2>
-      <p style="text-align:center; max-width:640px; margin:0 auto 24px; color: var(--text-secondary);">
-        If ClawPurse is saving your node hours of ops time, tip the builders a Timpi coffee. Every contribution keeps the guardrails sharp.
+    <!-- ============ POWERED BY TIMPI ============ -->
+    <section class="section reveal" id="timpi">
+      <span class="tag tag--cyan">Ecosystem</span>
+      <h2 class="section__title">Powered by Timpi &amp; the Neutaro blockchain</h2>
+      <p class="section__desc">
+        ClawPurse is the payment layer for <a href="https://timpi.io" target="_blank" rel="noopener">Timpi</a>&rsquo;s independent search network.
+        Timpi combines privacy-first search, an open Data API, and DePIN nodes that reward operators for running the TAP network.
       </p>
-      <div style="text-align:center; background: var(--bg-elevated); border:1px solid var(--border-accent); border-radius:18px; padding:24px; box-shadow:0 25px 60px rgba(0,0,0,0.4);">
-        <p style="margin:0 0 8px; font-weight:600; letter-spacing:0.05em; color: var(--cyan-bright);">Buy Mhue a Timpi coffee ☕</p>
-        <code style="display:inline-block; font-size:0.95rem; padding:12px 18px; border-radius:12px; background:rgba(0,0,0,0.35); border:1px solid var(--border-subtle);">
-          neutaro1e8xal8tqdegu4w48z3fphemd3hc07gech3pfek
-        </code>
-        <p style="margin:16px 0 0; font-size:0.9rem; color: var(--text-secondary);">Memo optional — just let us know what you shipped!</p>
+      <div class="split">
+        <div class="info-card">
+          <div class="tag tag--cyan">Timpi stack</div>
+          <h3>Search, Data, DePIN</h3>
+          <ul>
+            <li><strong>Search Engine:</strong> censorship-resistant results with no profiling or tracking.</li>
+            <li><strong>Data API:</strong> programmatic access to the decentralized index.</li>
+            <li><strong>DePIN nodes:</strong> Collectors, Guardians, and GeoCores that earn NTMPI.</li>
+          </ul>
+          <p style="margin:0; color: var(--text-2);">Join at <a href="https://timpi.io" target="_blank" rel="noopener">timpi.io</a>.</p>
+        </div>
+        <div class="info-card">
+          <div class="tag tag--gold">Where to get NTMPI</div>
+          <h3>MEXC Spot Pair</h3>
+          <ol>
+            <li>Sign in to MEXC and deposit USDT.</li>
+            <li>Open the <a href="https://www.mexc.com/exchange/NTMPI_USDT" target="_blank" rel="noopener">NTMPI/USDT</a> spot market.</li>
+            <li>Place an order, then withdraw to your Neutaro address.</li>
+          </ol>
+          <h3 style="margin-top:20px;">Gravity Bridge &rarr; Osmosis</h3>
+          <ol>
+            <li>Bridge stablecoins from Ethereum via <a href="https://gravitypulse.app/" target="_blank" rel="noopener">Gravity Pulse</a>.</li>
+            <li>IBC-hop to Osmosis via Keplr or Leap.</li>
+            <li>Swap for NTMPI and IBC to Neutaro.</li>
+          </ol>
+          <p style="margin:0; color: var(--text-2);">Full guide: <a href="https://github.com/mhue-ai/ClawPurse/blob/main/HOWTOGETTIMPI.md" target="_blank" rel="noopener">HOWTOGETTIMPI.md</a></p>
+        </div>
       </div>
     </section>
+
+    <!-- ============ VERSION HISTORY ============ -->
+    <section class="section reveal" id="releases">
+      <span class="tag tag--coral">Releases</span>
+      <h2 class="section__title">Version history</h2>
+      <div class="split">
+        <div class="card">
+          <h3>Wallet v2.0 &mdash; Staking</h3>
+          <p>Full staking CLI and API: <code>stake</code>, <code>unstake</code>, <code>redelegate</code>, <code>delegations</code>, <code>validators</code>. 22-day unbonding support and validator discovery.</p>
+        </div>
+        <div class="card">
+          <h3>Wallet v2.0.1 &mdash; Security</h3>
+          <p>Password strength enforcement, input validation, 60+ automated tests, CI/CD pipeline, and 6 new documentation guides.</p>
+        </div>
+        <div class="card">
+          <h3>Gateway v0.2.0</h3>
+          <p>HTTP 402 reverse proxy with invoice routing, prepaid balances, on-chain verification, JWT management API, and Docker deploy.</p>
+        </div>
+        <div class="card">
+          <h3>Timpi Drip Faucet</h3>
+          <p>Agent-friendly faucet with proof-of-work challenge. Higher throughput drip for OpenClaw-authenticated agents.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DONATE ============ -->
+    <section class="section reveal">
+      <div class="donate">
+        <p style="font-weight:600; font-size:1.1rem; color:var(--cyan); margin-bottom:4px;">
+          Buy Mhue a Timpi coffee &#9749;
+        </p>
+        <p style="color:var(--text-2); font-size:0.92rem;">
+          If the ecosystem is saving your stack ops time, tip the builders.
+        </p>
+        <code class="donate__addr">neutaro1e8xal8tqdegu4w48z3fphemd3hc07gech3pfek</code>
+        <p style="margin-top:14px; font-size:0.85rem; color:var(--text-3);">Memo optional &mdash; just let us know what you shipped!</p>
+      </div>
+    </section>
+
   </main>
+
+  <!-- ============ FOOTER ============ -->
   <footer>
-    Maintained by the Mhue family • Timpi / NTMPI wallet for Agentic AI &amp; Automation • v2.0.1
+    <nav aria-label="Page sections" style="margin-bottom:16px;">
+      <div class="footer-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#wallet-features">Wallet</a>
+        <a href="#gateway-features">Gateway</a>
+        <a href="#agents">Agents</a>
+        <a href="#quick-start">Quick Start</a>
+        <a href="#timpi">Ecosystem</a>
+        <a href="#releases">Releases</a>
+      </div>
+    </nav>
+    <nav aria-label="External links">
+      <div class="footer-links">
+        <a href="https://github.com/mhue-ai/ClawPurse" target="_blank" rel="noopener">Wallet Repo</a>
+        <a href="https://github.com/mhue-ai/clawpurse-gateway" target="_blank" rel="noopener">Gateway Repo</a>
+        <a href="https://gateway.clawpurse.ai" target="_blank" rel="noopener">Gateway Site</a>
+        <a href="https://drip.clawpurse.ai" target="_blank" rel="noopener">Timpi Drip</a>
+        <a href="https://neutaro.com" target="_blank" rel="noopener">Neutaro</a>
+        <a href="https://timpi.io" target="_blank" rel="noopener">Timpi</a>
+        <a href="https://explorer.neutaro.io" target="_blank" rel="noopener">Explorer</a>
+      </div>
+    </nav>
+    <p>Maintained by the Mhue family &bull; ClawPurse Micropayment Ecosystem &bull; MIT License</p>
   </footer>
+
+  <script>
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  </script>
 </body>
 </html>
