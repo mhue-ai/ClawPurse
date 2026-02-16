@@ -1,33 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="{{meta.lang}}" dir="{{meta.dir}}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClawPurse — NTMPI Micropayment Ecosystem for AI Agents & DePIN</title>
-  <meta name="description" content="ClawPurse is an open-source micropayment ecosystem on the Neutaro blockchain. Local NTMPI wallet with encrypted guardrails, HTTP 402 payment gateway for API monetization, and agent-ready staking — built for agentic AI, DePIN operators, and machine-to-machine commerce." />
+  <title>{{meta.title}}</title>
+  <meta name="description" content="{{meta.description}}" />
   <meta name="keywords" content="ClawPurse, NTMPI, micropayments, Neutaro, HTTP 402, payment gateway, agentic AI, DePIN, blockchain wallet, machine-to-machine payments, Timpi, staking, API monetization" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://clawpurse.ai/" />
-  <link rel="alternate" hreflang="en" href="https://clawpurse.ai/" />
-  <link rel="alternate" hreflang="ja" href="https://clawpurse.ai/ja/" />
-  <link rel="alternate" hreflang="ko" href="https://clawpurse.ai/ko/" />
-  <link rel="alternate" hreflang="es" href="https://clawpurse.ai/es/" />
-  <link rel="alternate" hreflang="fr" href="https://clawpurse.ai/fr/" />
-  <link rel="alternate" hreflang="hi" href="https://clawpurse.ai/hi/" />
-  <link rel="alternate" hreflang="zh" href="https://clawpurse.ai/zh/" />
-  <link rel="alternate" hreflang="id" href="https://clawpurse.ai/id/" />
-  <link rel="alternate" hreflang="x-default" href="https://clawpurse.ai/" />
-  <meta property="og:title" content="ClawPurse — NTMPI Micropayment Ecosystem for AI Agents & DePIN" />
-  <meta property="og:description" content="Local NTMPI wallet + HTTP 402 payment gateway. Encrypted guardrails, staking automation, and API monetization for agentic AI and machine-to-machine commerce on Neutaro." />
+  <link rel="canonical" href="{{CANONICAL_URL}}" />
+  {{HREFLANG_TAGS}}
+  <meta property="og:title" content="{{meta.og_title}}" />
+  <meta property="og:description" content="{{meta.og_description}}" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://clawpurse.ai/" />
+  <meta property="og:url" content="{{CANONICAL_URL}}" />
   <meta property="og:site_name" content="ClawPurse" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ClawPurse — NTMPI Micropayment Ecosystem for AI Agents & DePIN" />
-  <meta name="twitter:description" content="Local NTMPI wallet + HTTP 402 payment gateway. Encrypted guardrails, staking automation, and API monetization for agentic AI and machine-to-machine commerce on Neutaro." />
+  <meta name="twitter:title" content="{{meta.og_title}}" />
+  <meta name="twitter:description" content="{{meta.og_description}}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="{{FONT_URL}}" rel="stylesheet" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -37,7 +29,7 @@
     "operatingSystem": "Linux, macOS, Windows",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "url": "https://clawpurse.ai",
-    "description": "ClawPurse is an open-source micropayment ecosystem on the Neutaro blockchain. Local NTMPI wallet with encrypted guardrails, HTTP 402 payment gateway for API monetization, and agent-ready staking — built for agentic AI, DePIN operators, and machine-to-machine commerce."
+    "description": "{{meta.description}}"
   }
   </script>
   <style>
@@ -326,29 +318,20 @@
   </style>
 </head>
 <body>
-  <a href="#main" class="skip-link">Skip to main content</a>
+  <a href="#main" class="skip-link">{{skipLink}}</a>
 
   <nav class="topnav" aria-label="Main navigation">
     <div class="topnav-inner">
       <div class="topnav-logo"><span class="claw">Claw</span>Purse</div>
       <ul class="topnav-links">
-        <li><a href="#how-it-works">How It Works</a></li>
-        <li><a href="#wallet-features">Wallet</a></li>
-        <li><a href="#gateway-features">Gateway</a></li>
-        <li><a href="#agents">Agents</a></li>
-        <li><a href="#quick-start">Quick Start</a></li>
-        <li><a href="#timpi">Ecosystem</a></li>
-        <li><a href="#releases">Releases</a></li>
-        <li><select id="langSwitcher" aria-label="Language" onchange="window.location.href=this.value">
-            <option value="/" selected>English</option>
-            <option value="/ja/">日本語</option>
-            <option value="/ko/">한국어</option>
-            <option value="/es/">Español</option>
-            <option value="/fr/">Français</option>
-            <option value="/hi/">हिन्दी</option>
-            <option value="/zh/">中文</option>
-            <option value="/id/">Bahasa Indonesia</option>
-          </select></li>
+        <li><a href="#how-it-works">{{nav.howItWorks}}</a></li>
+        <li><a href="#wallet-features">{{nav.wallet}}</a></li>
+        <li><a href="#gateway-features">{{nav.gateway}}</a></li>
+        <li><a href="#agents">{{nav.agents}}</a></li>
+        <li><a href="#quick-start">{{nav.quickStart}}</a></li>
+        <li><a href="#timpi">{{nav.ecosystem}}</a></li>
+        <li><a href="#releases">{{nav.releases}}</a></li>
+        <li>{{LANG_SWITCHER}}</li>
       </ul>
     </div>
   </nav>
@@ -358,16 +341,16 @@
     <!-- HERO -->
     <section class="hero">
       <div class="container">
-        <div class="hero-badge">Open-source micropayment infrastructure on Neutaro</div>
-        <h1>ClawPurse Micropayment Ecosystem</h1>
-        <p class="hero-sub">A local NTMPI wallet and HTTP 402 payment gateway for DePIN operators, validator treasuries, and agentic AI. Send, stake, gate APIs, and verify transactions on-chain — with encrypted guardrails and zero third-party custody.</p>
+        <div class="hero-badge">{{hero.badge}}</div>
+        <h1>{{hero.title}}</h1>
+        <p class="hero-sub">{{hero.subtitle}}</p>
         <div class="hero-ctas">
-          <a href="https://github.com/mhue-ai/ClawPurse" class="btn btn-primary">Wallet on GitHub</a>
-          <a href="https://gateway.clawpurse.ai" class="btn btn-outline">402 Gateway</a>
-          <a href="https://drip.clawpurse.ai" class="btn btn-outline">Timpi Drip Faucet</a>
-          <a href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md" class="btn btn-outline">AI Agent Guide</a>
+          <a href="https://github.com/mhue-ai/ClawPurse" class="btn btn-primary">{{hero.ctaWallet}}</a>
+          <a href="https://gateway.clawpurse.ai" class="btn btn-outline">{{hero.ctaGateway}}</a>
+          <a href="https://drip.clawpurse.ai" class="btn btn-outline">{{hero.ctaDrip}}</a>
+          <a href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md" class="btn btn-outline">{{hero.ctaAgent}}</a>
         </div>
-        <p class="hero-skill">📄 SKILL.md — Complete agent integration docs: <a href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md">github.com/mhue-ai/ClawPurse/blob/main/SKILL.md</a></p>
+        <p class="hero-skill">📄 {{hero.skillNote}} <a href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md">github.com/mhue-ai/ClawPurse/blob/main/SKILL.md</a></p>
       </div>
     </section>
 
@@ -376,16 +359,16 @@
       <div class="container">
         <div class="product-grid">
           <div class="product-card">
-            <div class="label">Wallet</div>
-            <h3>ClawPurse Wallet</h3>
-            <p>Local-only NTMPI wallet with AES-256 encrypted keystores, destination allowlists, staking automation, and a guardrail wizard. CLI and programmatic API for agents, scripts, and human operators.</p>
-            <a href="https://github.com/mhue-ai/ClawPurse">View Wallet Repo →</a>
+            <div class="label">{{products.walletLabel}}</div>
+            <h3>{{products.walletTitle}}</h3>
+            <p>{{products.walletDesc}}</p>
+            <a href="https://github.com/mhue-ai/ClawPurse">{{products.walletCta}}</a>
           </div>
           <div class="product-card">
-            <div class="label">Gateway</div>
-            <h3>ClawPurse 402 Gateway</h3>
-            <p>HTTP reverse proxy implementing 402 Payment Required. Gate any API behind NTMPI micropayments with pay-per-request invoicing, prepaid balances, on-chain verification, and route-level pricing.</p>
-            <a href="https://gateway.clawpurse.ai">View Gateway Site →</a>
+            <div class="label">{{products.gatewayLabel}}</div>
+            <h3>{{products.gatewayTitle}}</h3>
+            <p>{{products.gatewayDesc}}</p>
+            <a href="https://gateway.clawpurse.ai">{{products.gatewayCta}}</a>
           </div>
         </div>
       </div>
@@ -394,26 +377,26 @@
     <!-- HOW IT WORKS -->
     <section id="how-it-works">
       <div class="container">
-        <span class="section-label">How It Works</span>
-        <h2 class="section-title">Wallet + Gateway = micropayment stack</h2>
-        <p class="section-sub">An AI agent hits a gated API, receives a 402 invoice, pays on-chain with ClawPurse, and retries with proof. The gateway verifies the transaction on Neutaro and proxies the request upstream. No accounts, no API keys — just on-chain settlement.</p>
+        <span class="section-label">{{howItWorks.label}}</span>
+        <h2 class="section-title">{{howItWorks.title}}</h2>
+        <p class="section-sub">{{howItWorks.description}}</p>
         <div class="diagram-box">
-<pre>  <span class="hl-agent">AI Agent / Script / Browser</span>
+<pre>  <span class="hl-agent">{{howItWorks.diagramAgent}}</span>
     │
-    ├── <span class="hl-code">GET /api/data</span> ───────────────────▶  <span class="hl-gw">402 Gateway</span>
+    ├── <span class="hl-code">{{howItWorks.diagramStep1}}</span> ───────────────────▶  <span class="hl-gw">{{howItWorks.diagramGateway}}</span>
     │                                            │
-    │   ◀── <span class="hl-gw">402 Payment Required</span> ──────────────┘
-    │       { invoiceId, amount, address, memo }
+    │   ◀── <span class="hl-gw">{{howItWorks.diagramStep2}}</span> ──────────────┘
+    │       {{howItWorks.diagramStep2Detail}}
     │
-    ├── <span class="hl-code">clawpurse send <addr> <amt> --memo <memo></span>
-    │       (on-chain NTMPI payment via wallet)
+    ├── <span class="hl-code">{{howItWorks.diagramStep3}}</span>
+    │       {{howItWorks.diagramStep3Detail}}
     │
-    ├── <span class="hl-code">GET /api/data</span> ───────────────────▶  <span class="hl-gw">402 Gateway</span>
-    │   Header: X-Payment-Proof: <invoiceId>   │
+    ├── <span class="hl-code">{{howItWorks.diagramStep4}}</span> ───────────────────▶  <span class="hl-gw">{{howItWorks.diagramGateway}}</span>
+    │   {{howItWorks.diagramStep4Detail}}   │
     │                                            │
-    │   Gateway verifies tx on Neutaro chain  │
+    │   {{howItWorks.diagramStep5}}  │
     │                                            │
-    │   ◀── <span class="hl-agent">200 OK (proxied from upstream)</span> ──┘</pre>
+    │   ◀── <span class="hl-agent">{{howItWorks.diagramStep6}}</span> ──┘</pre>
         </div>
       </div>
     </section>
@@ -421,33 +404,33 @@
     <!-- WALLET FEATURES -->
     <section id="wallet-features">
       <div class="container">
-        <span class="section-label">Wallet</span>
-        <h2 class="section-title">ClawPurse Wallet features</h2>
-        <p class="section-sub">Everything you need to manage NTMPI locally — with guardrails built for autonomous agents.</p>
+        <span class="section-label">{{walletFeatures.label}}</span>
+        <h2 class="section-title">{{walletFeatures.title}}</h2>
+        <p class="section-sub">{{walletFeatures.subtitle}}</p>
         <div class="feat-grid">
           <div class="feat-card">
-            <h4>Encrypted Keystore</h4>
-            <p>AES-256-GCM with scrypt key derivation. Mnemonics stay locked to the local node.</p>
+            <h4>{{walletFeatures.encryptedTitle}}</h4>
+            <p>{{walletFeatures.encryptedDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>Guardrail Wizard</h4>
-            <p>Interactive setup for send limits, confirmation thresholds, and allowlist enforcement mode.</p>
+            <h4>{{walletFeatures.guardrailTitle}}</h4>
+            <p>{{walletFeatures.guardrailDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>Destination Allowlists</h4>
-            <p>Enforce or document trusted addresses with per-destination caps, required memos, and notes.</p>
+            <h4>{{walletFeatures.allowlistTitle}}</h4>
+            <p>{{walletFeatures.allowlistDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>Transaction Receipts</h4>
-            <p>Every send recorded locally with tx hash, block height, memo, and guardrail status for full audit trails.</p>
+            <h4>{{walletFeatures.receiptsTitle}}</h4>
+            <p>{{walletFeatures.receiptsDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>Staking & Delegations</h4>
-            <p>Delegate, undelegate, redelegate NTMPI. Discover validators, track rewards, and manage the 22-day unbonding period.</p>
+            <h4>{{walletFeatures.stakingTitle}}</h4>
+            <p>{{walletFeatures.stakingDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>Programmatic API</h4>
-            <p>Import wallet functions directly into agents and scripts. send(), getBalance(), delegate() and more.</p>
+            <h4>{{walletFeatures.apiTitle}}</h4>
+            <p>{{walletFeatures.apiDesc}}</p>
           </div>
         </div>
       </div>
@@ -456,67 +439,67 @@
     <!-- GATEWAY FEATURES -->
     <section id="gateway-features">
       <div class="container">
-        <span class="section-label">402 Gateway</span>
-        <h2 class="section-title">Monetize any API with NTMPI micropayments</h2>
-        <p class="section-sub">The ClawPurse 402 Gateway sits in front of your upstream API and handles invoicing, on-chain verification, and proxying. Two payment flows, route-level pricing, and a JWT-protected management API.</p>
+        <span class="section-label">{{gatewayFeatures.label}}</span>
+        <h2 class="section-title">{{gatewayFeatures.title}}</h2>
+        <p class="section-sub">{{gatewayFeatures.subtitle}}</p>
         <div class="feat-grid">
           <div class="feat-card">
-            <h4>Pay-per-request</h4>
-            <p>Client receives a 402 invoice, pays on-chain, retries with X-Payment-Proof header. Gateway verifies and proxies.</p>
+            <h4>{{gatewayFeatures.payPerTitle}}</h4>
+            <p>{{gatewayFeatures.payPerDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>Prepaid balance</h4>
-            <p>Client deposits NTMPI once. Subsequent requests use X-Client-Id and the gateway deducts per call — no repeated on-chain transactions.</p>
+            <h4>{{gatewayFeatures.prepaidTitle}}</h4>
+            <p>{{gatewayFeatures.prepaidDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>On-chain verification</h4>
-            <p>Queries Neutaro REST API to confirm payment amount, memo, and block confirmations.</p>
+            <h4>{{gatewayFeatures.onchainTitle}}</h4>
+            <p>{{gatewayFeatures.onchainDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>Route-level pricing</h4>
-            <p>Default price per request plus per-route overrides. Cheap reads, expensive writes.</p>
+            <h4>{{gatewayFeatures.routeTitle}}</h4>
+            <p>{{gatewayFeatures.routeDesc}}</p>
           </div>
           <div class="feat-card" style="grid-column: 1 / -1;">
-            <h4>Docker & bare-metal deploy</h4>
-            <p>One-command docker compose up or Ubuntu deploy script. SQLite storage, zero external dependencies.</p>
+            <h4>{{gatewayFeatures.deployTitle}}</h4>
+            <p>{{gatewayFeatures.deployDesc}}</p>
           </div>
         </div>
-        <p style="margin-top:20px; font-size:0.9rem; color:var(--text-dim);">Full API reference, configuration guide, and agent integration examples at <a href="https://gateway.clawpurse.ai">gateway.clawpurse.ai</a></p>
+        <p style="margin-top:20px; font-size:0.9rem; color:var(--text-dim);">{{gatewayFeatures.apiRef}} <a href="https://gateway.clawpurse.ai">gateway.clawpurse.ai</a></p>
       </div>
     </section>
 
     <!-- AGENTS -->
     <section id="agents">
       <div class="container">
-        <span class="section-label">Agent Integration</span>
-        <h2 class="section-title">First-class support for agentic AI</h2>
-        <p class="section-sub">ClawPurse was built inside the OpenClaw ecosystem. Autonomous agents get wallet access with human-grade guardrails. Proof-of-work faucets, bounty payouts, 402 API calls, or automated restakes — all from the same local keystore.</p>
+        <span class="section-label">{{agents.label}}</span>
+        <h2 class="section-title">{{agents.title}}</h2>
+        <p class="section-sub">{{agents.subtitle}}</p>
 
         <div class="agent-highlight">
           <div class="icon">🤖</div>
           <div>
-            <h4>SKILL.md — Agent Integration Guide</h4>
-            <p>Complete documentation for OpenClaw agents, automation scripts, and AI assistants. Covers the wallet API, 402 gateway flow, security best practices, and integration patterns.</p>
-            <a href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md">View SKILL.md on GitHub →</a>
+            <h4>{{agents.skillTitle}}</h4>
+            <p>{{agents.skillDesc}}</p>
+            <a href="https://github.com/mhue-ai/ClawPurse/blob/main/SKILL.md">{{agents.skillCta}}</a>
           </div>
         </div>
 
         <div class="feat-grid">
           <div class="feat-card">
-            <h4>Skill-ready</h4>
-            <p>The OpenClaw skill wraps the CLI for drop-in agent usage. Pipe receipts straight back to chat.</p>
+            <h4>{{agents.skillReadyTitle}}</h4>
+            <p>{{agents.skillReadyDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>Priority faucet lanes</h4>
-            <p>Timpi Drip gives OpenClaw-authenticated agents a higher throughput drip for faster onboarding.</p>
+            <h4>{{agents.faucetTitle}}</h4>
+            <p>{{agents.faucetDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>PoW over CAPTCHA</h4>
-            <p>Agent-friendly proof-of-work replaces CAPTCHA. ClawPurse ships the PoW solver that powers Timpi Drip.</p>
+            <h4>{{agents.powTitle}}</h4>
+            <p>{{agents.powDesc}}</p>
           </div>
           <div class="feat-card">
-            <h4>Autonomous 402 flow</h4>
-            <p>Agents detect 402 responses, parse invoices, pay on-chain, and retry with proof — all programmatically.</p>
+            <h4>{{agents.autoTitle}}</h4>
+            <p>{{agents.autoDesc}}</p>
           </div>
         </div>
       </div>
@@ -525,21 +508,21 @@
     <!-- QUICK START -->
     <section id="quick-start">
       <div class="container">
-        <span class="section-label">Quick Start</span>
-        <h2 class="section-title">Get running in under a minute</h2>
+        <span class="section-label">{{quickStart.label}}</span>
+        <h2 class="section-title">{{quickStart.title}}</h2>
         <div class="code-block">
-<pre><span class="comment"># Install the wallet</span>
+<pre><span class="comment">{{quickStart.commentInstall}}</span>
 <span class="cmd">npm install && npm run build && npm link</span>
 
-<span class="comment"># Create a wallet</span>
+<span class="comment">{{quickStart.commentCreate}}</span>
 <span class="cmd">clawpurse init --password &lt;pass&gt;</span>
 <span class="cmd">clawpurse address</span>
 <span class="cmd">clawpurse balance --password &lt;pass&gt;</span>
 
-<span class="comment"># Send tokens</span>
+<span class="comment">{{quickStart.commentSend}}</span>
 <span class="cmd">clawpurse send neutaro1... 1.25 --password &lt;pass&gt;</span>
 
-<span class="comment"># Staking (v2.0)</span>
+<span class="comment">{{quickStart.commentStaking}}</span>
 <span class="cmd">clawpurse validators</span>
 <span class="cmd">clawpurse stake neutarovaloper1... 100 --password &lt;pass&gt;</span>
 <span class="cmd">clawpurse delegations</span></pre>
@@ -550,40 +533,40 @@
     <!-- ECOSYSTEM -->
     <section id="timpi">
       <div class="container">
-        <span class="section-label">Ecosystem</span>
-        <h2 class="section-title">Powered by Timpi & the Neutaro blockchain</h2>
-        <p class="section-sub">ClawPurse is the payment layer for Timpi's independent search network. Timpi combines privacy-first search, an open Data API, and DePIN nodes that reward operators for running the TAP network.</p>
+        <span class="section-label">{{ecosystem.label}}</span>
+        <h2 class="section-title">{{ecosystem.title}}</h2>
+        <p class="section-sub">{{ecosystem.subtitle}}</p>
 
         <div class="eco-grid">
           <div class="eco-card">
-            <div class="label">Timpi stack</div>
-            <h4>Search, Data, DePIN</h4>
+            <div class="label">{{ecosystem.stackLabel}}</div>
+            <h4>{{ecosystem.stackTitle}}</h4>
             <ul>
-              <li>Search Engine: censorship-resistant results with no profiling or tracking.</li>
-              <li>Data API: programmatic access to the decentralized index.</li>
-              <li>DePIN nodes: Collectors, Guardians, and GeoCores that earn NTMPI.</li>
+              <li>{{ecosystem.searchEngine}}</li>
+              <li>{{ecosystem.dataApi}}</li>
+              <li>{{ecosystem.depinNodes}}</li>
             </ul>
-            <p style="margin-top:12px;">Join at <a href="https://timpi.io">timpi.io</a>.</p>
+            <p style="margin-top:12px;">{{ecosystem.joinAt}} <a href="https://timpi.io">timpi.io</a>.</p>
           </div>
 
           <div>
             <div class="eco-card" style="margin-bottom:20px;">
-              <div class="label">Where to get NTMPI</div>
-              <h4>MEXC Spot Pair</h4>
+              <div class="label">{{ecosystem.mexcLabel}}</div>
+              <h4>{{ecosystem.mexcTitle}}</h4>
               <ol class="eco-steps">
-                <li>Sign in to MEXC and deposit USDT.</li>
-                <li>Open the NTMPI/USDT spot market.</li>
-                <li>Place an order, then withdraw to your Neutaro address.</li>
+                <li>{{ecosystem.mexcStep1}}</li>
+                <li>{{ecosystem.mexcStep2}}</li>
+                <li>{{ecosystem.mexcStep3}}</li>
               </ol>
             </div>
             <div class="eco-card">
-              <h4>Gravity Bridge → Osmosis</h4>
+              <h4>{{ecosystem.bridgeTitle}}</h4>
               <ol class="eco-steps">
-                <li>Bridge stablecoins from Ethereum via Gravity Pulse.</li>
-                <li>IBC-hop to Osmosis via Keplr or Leap.</li>
-                <li>Swap for NTMPI and IBC to Neutaro.</li>
+                <li>{{ecosystem.bridgeStep1}}</li>
+                <li>{{ecosystem.bridgeStep2}}</li>
+                <li>{{ecosystem.bridgeStep3}}</li>
               </ol>
-              <p style="margin-top:10px;">Full guide: <a href="https://github.com/mhue-ai/ClawPurse/blob/main/HOWTOGETTIMPI.md">HOWTOGETTIMPI.md</a></p>
+              <p style="margin-top:10px;">{{ecosystem.fullGuide}} <a href="https://github.com/mhue-ai/ClawPurse/blob/main/HOWTOGETTIMPI.md">HOWTOGETTIMPI.md</a></p>
             </div>
           </div>
         </div>
@@ -593,24 +576,24 @@
     <!-- RELEASES -->
     <section id="releases">
       <div class="container">
-        <span class="section-label">Releases</span>
-        <h2 class="section-title">Version history</h2>
+        <span class="section-label">{{releases.label}}</span>
+        <h2 class="section-title">{{releases.title}}</h2>
         <div class="release-list">
           <div class="release-item">
-            <h4>Wallet v2.0 — Staking</h4>
-            <p>Full staking CLI and API: stake, unstake, redelegate, delegations, validators. 22-day unbonding support and validator discovery.</p>
+            <h4>{{releases.wallet20Title}}</h4>
+            <p>{{releases.wallet20Desc}}</p>
           </div>
           <div class="release-item">
-            <h4>Wallet v2.0.1 — Security</h4>
-            <p>Password strength enforcement, input validation, 60+ automated tests, CI/CD pipeline, and 6 new documentation guides.</p>
+            <h4>{{releases.wallet201Title}}</h4>
+            <p>{{releases.wallet201Desc}}</p>
           </div>
           <div class="release-item">
-            <h4>Gateway v0.2.0</h4>
-            <p>HTTP 402 reverse proxy with invoice routing, prepaid balances, on-chain verification, JWT management API, and Docker deploy.</p>
+            <h4>{{releases.gateway020Title}}</h4>
+            <p>{{releases.gateway020Desc}}</p>
           </div>
           <div class="release-item">
-            <h4>Timpi Drip Faucet</h4>
-            <p>Agent-friendly faucet with proof-of-work challenge. Higher throughput drip for OpenClaw-authenticated agents.</p>
+            <h4>{{releases.dripTitle}}</h4>
+            <p>{{releases.dripDesc}}</p>
           </div>
         </div>
       </div>
@@ -618,10 +601,10 @@
 
     <!-- DONATE -->
     <div class="donate-box">
-      <h3>Buy Mhue a Timpi coffee ☕</h3>
-      <p>If the ecosystem is saving your stack ops time, tip the builders.</p>
+      <h3>{{donate.title}}</h3>
+      <p>{{donate.desc}}</p>
       <div class="donate-addr">neutaro1e8xal8tqdegu4w48z3fphemd3hc07gech3pfek</div>
-      <p class="donate-memo">Memo optional — just let us know what you shipped!</p>
+      <p class="donate-memo">{{donate.memoNote}}</p>
     </div>
 
   </main>
@@ -629,27 +612,27 @@
   <footer>
     <div class="footer-inner">
       <nav class="footer-nav" aria-label="Footer navigation">
-        <a href="#how-it-works">How It Works</a>
-        <a href="#wallet-features">Wallet</a>
-        <a href="#gateway-features">Gateway</a>
-        <a href="#agents">Agents</a>
-        <a href="#quick-start">Quick Start</a>
-        <a href="#timpi">Ecosystem</a>
-        <a href="#releases">Releases</a>
+        <a href="#how-it-works">{{nav.howItWorks}}</a>
+        <a href="#wallet-features">{{nav.wallet}}</a>
+        <a href="#gateway-features">{{nav.gateway}}</a>
+        <a href="#agents">{{nav.agents}}</a>
+        <a href="#quick-start">{{nav.quickStart}}</a>
+        <a href="#timpi">{{nav.ecosystem}}</a>
+        <a href="#releases">{{nav.releases}}</a>
       </nav>
       <nav class="footer-nav" aria-label="External links">
-        <a href="https://github.com/mhue-ai/ClawPurse">Wallet Repo</a>
-        <a href="https://github.com/mhue-ai/clawpurse-gateway">Gateway Repo</a>
-        <a href="https://gateway.clawpurse.ai">Gateway Site</a>
-        <a href="https://drip.clawpurse.ai">Timpi Drip</a>
-        <a href="https://neutaro.com">Neutaro</a>
-        <a href="https://timpi.io">Timpi</a>
-        <a href="https://explorer.neutaro.io">Explorer</a>
+        <a href="https://github.com/mhue-ai/ClawPurse">{{footer.walletRepo}}</a>
+        <a href="https://github.com/mhue-ai/clawpurse-gateway">{{footer.gatewayRepo}}</a>
+        <a href="https://gateway.clawpurse.ai">{{footer.gatewaySite}}</a>
+        <a href="https://drip.clawpurse.ai">{{footer.dripFaucet}}</a>
+        <a href="https://neutaro.com">{{footer.neutaro}}</a>
+        <a href="https://timpi.io">{{footer.timpi}}</a>
+        <a href="https://explorer.neutaro.io">{{footer.explorer}}</a>
       </nav>
       <div class="footer-meta">
-        <span>Maintained by the Mhue family</span>
-        <span>ClawPurse Micropayment Ecosystem</span>
-        <span>MIT License</span>
+        <span>{{footer.maintained}}</span>
+        <span>{{footer.ecosystem}}</span>
+        <span>{{footer.license}}</span>
       </div>
     </div>
   </footer>
