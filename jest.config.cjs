@@ -7,13 +7,16 @@ module.exports = {
     '**/?(*.)+(spec|test).ts'
   ],
   transform: {
-    '^.+\\.ts$': ['ts-jest', {
+    '^.+\\.tsx?$': ['ts-jest', {
+      useESM: true,
+    }],
+    '^.+\\.jsx?$': ['ts-jest', {
       useESM: true,
     }],
   },
   extensionsToTreatAsEsm: ['.ts'],
   transformIgnorePatterns: [
-    'node_modules/(?!(@cosmjs|@scure)/)',
+    'node_modules/(?!(@cosmjs|@scure|@noble)/)',
   ],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',

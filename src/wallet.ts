@@ -76,16 +76,17 @@ export async function getBalance(address: string): Promise<BalanceResult> {
   };
 }
 
-export function parseAmount(input: string): bigint {
+export function parseAmount(input: string | number): bigint {
+  const str = String(input);
   // Handle both raw micro units and display units
-  if (input.includes('.')) {
+  if (str.includes('.')) {
     // Display units (e.g., "1.5" NTMPI)
-    const [whole, fraction = ''] = input.split('.');
+    const [whole, fraction = ''] = str.split('.');
     const paddedFraction = fraction.padEnd(NEUTARO_CONFIG.decimals, '0').slice(0, NEUTARO_CONFIG.decimals);
     return BigInt(whole) * BigInt(10 ** NEUTARO_CONFIG.decimals) + BigInt(paddedFraction);
   } else {
     // Assume display units if it's a "reasonable" number, micro units otherwise
-    const num = BigInt(input);
+    const num = BigInt(str);
     if (num < 1_000_000n) {
       // Likely display units
       return num * BigInt(10 ** NEUTARO_CONFIG.decimals);
