@@ -15,18 +15,18 @@
     { key: 'home',    url: 'https://clawpurse.ai',         pathMatch: 'clawpurse.ai' },
     { key: 'gateway', url: 'https://gateway.clawpurse.ai',  pathMatch: 'gateway.clawpurse.ai' },
     { key: 'drip',    url: 'https://drip.clawpurse.ai',     pathMatch: 'drip.clawpurse.ai' },
-    { key: 'buy',     url: 'https://buy.clawpurse.ai',      pathMatch: 'buy.clawpurse.ai' },
+    { key: 'get',     url: 'https://get.clawpurse.ai',      pathMatch: 'get.clawpurse.ai' },
   ];
 
   const T = {
-    en: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Drip Faucet', buy: 'Buy NTMPI', lang_label: 'Language' },
-    ja: { home: 'ClawPurse', gateway: 'ゲートウェイ', drip: 'ドリップ蛇口', buy: 'NTMPI購入', lang_label: '言語' },
-    ko: { home: 'ClawPurse', gateway: '게이트웨이', drip: '드립 수도꼭지', buy: 'NTMPI 구매', lang_label: '언어' },
-    es: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Grifo Drip', buy: 'Comprar NTMPI', lang_label: 'Idioma' },
-    fr: { home: 'ClawPurse', gateway: 'Passerelle', drip: 'Robinet Drip', buy: 'Acheter NTMPI', lang_label: 'Langue' },
-    hi: { home: 'ClawPurse', gateway: 'गेटवे', drip: 'ड्रिप फॉसेट', buy: 'NTMPI खरीदें', lang_label: 'भाषा' },
-    zh: { home: 'ClawPurse', gateway: '网关', drip: '水龙头', buy: '购买NTMPI', lang_label: '语言' },
-    id: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Keran Drip', buy: 'Beli NTMPI', lang_label: 'Bahasa' },
+    en: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Drip Faucet', get: 'Get NTMPI', lang_label: 'Language' },
+    ja: { home: 'ClawPurse', gateway: 'ゲートウェイ', drip: 'ドリップ蛇口', get: 'NTMPI取得', lang_label: '言語' },
+    ko: { home: 'ClawPurse', gateway: '게이트웨이', drip: '드립 수도꼭지', get: 'NTMPI 받기', lang_label: '언어' },
+    es: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Grifo Drip', get: 'Obtener NTMPI', lang_label: 'Idioma' },
+    fr: { home: 'ClawPurse', gateway: 'Passerelle', drip: 'Robinet Drip', get: 'Obtenir NTMPI', lang_label: 'Langue' },
+    hi: { home: 'ClawPurse', gateway: 'गेटवे', drip: 'ड्रिप फॉसेट', get: 'NTMPI प्राप्त करें', lang_label: 'भाषा' },
+    zh: { home: 'ClawPurse', gateway: '网关', drip: '水龙头', get: '获取NTMPI', lang_label: '语言' },
+    id: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Keran Drip', get: 'Dapatkan NTMPI', lang_label: 'Bahasa' },
   };
 
   // Detect language: <html lang="xx"> → URL path /xx/ → default en
