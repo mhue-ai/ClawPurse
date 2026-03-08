@@ -72,20 +72,20 @@
   // --- Inject CSS ---
   var style = document.createElement('style');
   style.textContent = [
-    '.cpnav{position:sticky;top:0;z-index:9999;background:rgba(10,11,13,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid #252833;padding:0 24px;font-family:"DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}',
+    '.cpnav{position:sticky;top:0;z-index:9999;background:rgba(12,14,19,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid #1e2230;padding:0 24px;font-family:"Outfit",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}',
     '.cpnav *{box-sizing:border-box;margin:0;padding:0}',
     '.cpnav-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px}',
-    '.cpnav-logo{font-weight:700;font-size:15px;color:#e8eaf0;display:flex;align-items:center;gap:8px;text-decoration:none}',
+    '.cpnav-logo{font-weight:700;font-size:15px;color:#e2e4ea;display:flex;align-items:center;gap:8px;text-decoration:none}',
     '.cpnav-logo:hover{opacity:0.85}',
-    '.cpnav-logo .cpnav-bolt{color:#00d4aa;font-size:18px}',
+    '.cpnav-logo .cpnav-bolt{color:#f47458;font-size:18px}',
     '.cpnav-links{display:flex;gap:4px;align-items:center;flex-wrap:wrap}',
-    '.cpnav-links a{font-size:13px;color:#8b8fa3;padding:6px 10px;border-radius:8px;text-decoration:none;transition:all 0.2s;white-space:nowrap}',
-    '.cpnav-links a:hover{color:#e8eaf0;background:#181b23}',
-    '.cpnav-links a.cpnav-active{color:#00d4aa;background:rgba(0,212,170,0.12)}',
+    '.cpnav-links a{font-size:13px;color:#8b8f9e;padding:6px 10px;border-radius:8px;text-decoration:none;transition:all 0.2s;white-space:nowrap}',
+    '.cpnav-links a:hover{color:#e2e4ea;background:#13161d}',
+    '.cpnav-links a.cpnav-active{color:#f47458;background:rgba(244,116,88,0.12)}',
     '.cpnav-lang{position:relative;display:inline-block}',
-    '.cpnav-lang select{appearance:none;-webkit-appearance:none;background:#181b23;color:#8b8fa3;border:1px solid #252833;border-radius:8px;padding:5px 28px 5px 10px;font-size:12px;font-family:inherit;cursor:pointer;transition:border-color 0.2s;outline:none}',
-    '.cpnav-lang select:hover{border-color:#3a3f52}',
-    '.cpnav-lang::after{content:"▾";position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:10px;color:#5c6078;pointer-events:none}',
+    '.cpnav-lang select{appearance:none;-webkit-appearance:none;background:#13161d;color:#8b8f9e;border:1px solid #1e2230;border-radius:8px;padding:5px 28px 5px 10px;font-size:12px;font-family:inherit;cursor:pointer;transition:border-color 0.2s;outline:none}',
+    '.cpnav-lang select:hover{border-color:#2a2f40}',
+    '.cpnav-lang::after{content:"▾";position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:10px;color:#5c6070;pointer-events:none}',
     '@media(max-width:640px){.cpnav-inner{height:auto;padding:12px 0;flex-wrap:wrap}.cpnav-links{gap:2px}}',
   ].join('\n');
   document.head.appendChild(style);
@@ -145,11 +145,11 @@
     document.body.appendChild(nav);
   }
 
-  // Load DM Sans if not already present
+  // Load Outfit if not already present
   if (!document.querySelector('link[href*="DM+Sans"]')) {
     var fontLink = document.createElement('link');
     fontLink.rel = 'stylesheet';
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap';
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap';
     document.head.appendChild(fontLink);
   }
 })();
