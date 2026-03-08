@@ -79,29 +79,6 @@
     .skip-link:focus { top: 16px; }
 
     /* NAV */
-    .topnav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(12,14,19,0.85);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-    }
-    .topnav-inner {
-      max-width: 1200px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 56px; gap: 16px;
-    }
-    .topnav-logo {
-      font-weight: 700; font-size: 1.05rem; color: var(--text);
-      display: flex; align-items: center; gap: 8px; white-space: nowrap;
-    }
-    .topnav-logo .claw { color: var(--coral); }
-    .topnav-links {
-      display: flex; align-items: center; gap: 20px;
-      list-style: none; font-size: 0.82rem; color: var(--text-dim);
-    }
-    .topnav-links a { color: var(--text-dim); }
-    .topnav-links a:hover { color: var(--text); }
     #langSwitcher {
       background: var(--bg-card); color: var(--text-dim);
       border: 1px solid var(--border); border-radius: 6px;
@@ -111,7 +88,6 @@
     #langSwitcher:hover { border-color: var(--coral); color: var(--text); }
 
     @media (max-width: 860px) {
-      .topnav-links { display: none; }
     }
 
     /* LAYOUT */
@@ -328,30 +304,8 @@
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>
 
-  <nav class="topnav" aria-label="Main navigation">
-    <div class="topnav-inner">
-      <div class="topnav-logo"><span class="claw">Claw</span>Purse</div>
-      <ul class="topnav-links">
-        <li><a href="#how-it-works">How It Works</a></li>
-        <li><a href="#wallet-features">Wallet</a></li>
-        <li><a href="#gateway-features">Gateway</a></li>
-        <li><a href="#agents">Agents</a></li>
-        <li><a href="#quick-start">Quick Start</a></li>
-        <li><a href="#timpi">Ecosystem</a></li>
-        <li><a href="#releases">Releases</a></li>
-        <li><select id="langSwitcher" aria-label="Language" onchange="window.location.href=this.value">
-            <option value="/" selected>English</option>
-            <option value="/ja/">日本語</option>
-            <option value="/ko/">한국어</option>
-            <option value="/es/">Español</option>
-            <option value="/fr/">Français</option>
-            <option value="/hi/">हिन्दी</option>
-            <option value="/zh/">中文</option>
-            <option value="/id/">Bahasa Indonesia</option>
-          </select></li>
-      </ul>
-    </div>
-  </nav>
+  <!-- Shared ecosystem nav -->
+  <script src="https://clawpurse.ai/nav.js"></script>
 
   <main id="main">
 

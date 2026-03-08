@@ -79,32 +79,7 @@
     .skip-link:focus { top: 16px; }
 
     /* NAV */
-    /* ── Unified ClawPurse Topnav ── */
-    .cp-topnav { position: sticky; top: 0; z-index: 100; background: rgba(12,14,19,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
-    .cp-topnav-inner { max-width: 1080px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 52px; padding: 0 24px; gap: 12px; }
-    .cp-topnav-logo { font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 6px; text-decoration: none; white-space: nowrap; flex-shrink: 0; }
-    .cp-topnav-logo .claw { color: var(--coral); }
-    .cp-topnav-logo .purse { color: var(--text); }
-    .cp-topnav-sites { display: flex; align-items: center; gap: 2px; list-style: none; margin: 0; padding: 0; }
-    .cp-topnav-sites a { color: var(--text-dim); font-size: 0.78rem; font-weight: 500; text-decoration: none; padding: 6px 10px; border-radius: 6px; transition: color 0.2s, background 0.2s; white-space: nowrap; }
-    .cp-topnav-sites a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-    .cp-topnav-sites a.active { color: var(--coral); background: var(--coral-dim); }
-    .cp-topnav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-    .cp-topnav-gh { color: var(--text-muted); display: flex; align-items: center; transition: color 0.2s; }
-    .cp-topnav-gh:hover { color: var(--text); }
-    .cp-lang { background: transparent; color: var(--text-dim); border: 1px solid var(--border); border-radius: 6px; padding: 3px 6px; font-size: 0.72rem; font-family: var(--font); cursor: pointer; }
-    .cp-lang:hover { border-color: var(--coral); color: var(--text); }
-    .cp-topnav-toggle { display: none; background: none; border: none; color: var(--text-dim); cursor: pointer; padding: 4px; }
-    .cp-section-nav { display: flex; justify-content: center; gap: 16px; padding: 8px 24px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 0.78rem; flex-wrap: wrap; }
-    .cp-section-nav a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-    .cp-section-nav a:hover { color: var(--text); }
     @media (max-width: 640px) {
-      .cp-topnav-inner { flex-wrap: wrap; height: auto; padding: 10px 16px; }
-      .cp-topnav-sites { display: none; width: 100%; order: 3; flex-direction: column; gap: 0; padding: 8px 0 4px; }
-      .cp-topnav-sites.open { display: flex; }
-      .cp-topnav-sites a { padding: 8px 0; border-radius: 0; font-size: 0.85rem; }
-      .cp-topnav-toggle { display: block; }
-      .cp-section-nav { display: none; }
     }
 
     /* LAYOUT */
@@ -321,35 +296,8 @@
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>
 
-  <nav class="cp-topnav" aria-label="ClawPurse ecosystem">
-    <div class="cp-topnav-inner">
-      <a href="https://clawpurse.ai" class="cp-topnav-logo"><span class="claw">Claw</span><span class="purse">Purse</span></a>
-      <button class="cp-topnav-toggle" onclick="this.nextElementSibling.classList.toggle('open')" aria-label="Toggle menu">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-      <ul class="cp-topnav-sites">
-        <li><a href="https://clawpurse.ai" data-site="wallet" class="active">Wallet</a></li>
-        <li><a href="https://gateway.clawpurse.ai" data-site="gateway">Gateway</a></li>
-        <li><a href="https://drip.clawpurse.ai" data-site="drip">Drip</a></li>
-        <li><a href="https://basis.clawpurse.ai" data-site="basis">Basis</a></li>
-      </ul>
-      <div class="cp-topnav-right">
-        <select class="cp-lang" id="langSwitcher" aria-label="Language" onchange="window.location.href=this.value">
-          <option value="/" selected>English</option>
-          <option value="/ja/">日本語</option>
-          <option value="/ko/">한국어</option>
-          <option value="/es/">Español</option>
-          <option value="/fr/">Français</option>
-          <option value="/hi/">हिन्दी</option>
-          <option value="/zh/">中文</option>
-          <option value="/id/">Bahasa Indonesia</option>
-        </select>
-        <a href="https://github.com/mhue-ai/ClawPurse" target="_blank" rel="noopener" class="cp-topnav-gh" aria-label="GitHub">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        </a>
-      </div>
-    </div>
-  </nav>
+  <!-- Shared ecosystem nav -->
+  <script src="https://clawpurse.ai/nav.js"></script>
   <div class="cp-section-nav" aria-label="Page sections">
     <a href="#how-it-works">How It Works</a>
     <a href="#wallet-features">Wallet</a>
