@@ -9,28 +9,28 @@
 (function () {
   'use strict';
 
-  const LANGS = ['en', 'ja', 'ko', 'es', 'fr', 'hi', 'zh', 'id'];
+  var LANGS = ['en', 'ja', 'ko', 'es', 'fr', 'hi', 'zh', 'id'];
 
-  const SITES = [
-    { key: 'home',    url: 'https://clawpurse.ai',         pathMatch: 'clawpurse.ai' },
-    { key: 'gateway', url: 'https://gateway.clawpurse.ai',  pathMatch: 'gateway.clawpurse.ai' },
-    { key: 'drip',    url: 'https://drip.clawpurse.ai',     pathMatch: 'drip.clawpurse.ai' },
-    { key: 'get',     url: 'https://get.clawpurse.ai',      pathMatch: 'get.clawpurse.ai' },
-    { key: 'ledger',  url: 'https://ledger.clawpurse.ai',   pathMatch: 'ledger.clawpurse.ai' },
+  var SITES = [
+    { key: 'home',      url: 'https://clawpurse.ai',         pathMatch: 'clawpurse.ai' },
+    { key: 'gateway',   url: 'https://gateway.clawpurse.ai',  pathMatch: 'gateway.clawpurse.ai' },
+    { key: 'drip',      url: 'https://drip.clawpurse.ai',     pathMatch: 'drip.clawpurse.ai' },
+    { key: 'get',       url: 'https://get.clawpurse.ai',      pathMatch: 'get.clawpurse.ai' },
+    { key: 'ledger',    url: 'https://ledger.clawpurse.ai',   pathMatch: 'ledger.clawpurse.ai' },
+    { key: 'nodewatch', url: 'https://nodewatch.clawpurse.ai', pathMatch: 'nodewatch.clawpurse.ai' },
   ];
 
-  const T = {
-    en: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Drip Faucet', get: 'Get NTMPI', ledger: 'Ledger', lang_label: 'Language' },
-    ja: { home: 'ClawPurse', gateway: 'ゲートウェイ', drip: 'ドリップ蛇口', get: 'NTMPI取得', ledger: '台帳', lang_label: '言語' },
-    ko: { home: 'ClawPurse', gateway: '게이트웨이', drip: '드립 수도꼭지', get: 'NTMPI 받기', ledger: '원장', lang_label: '언어' },
-    es: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Grifo Drip', get: 'Obtener NTMPI', ledger: 'Libro Mayor', lang_label: 'Idioma' },
-    fr: { home: 'ClawPurse', gateway: 'Passerelle', drip: 'Robinet Drip', get: 'Obtenir NTMPI', ledger: 'Registre', lang_label: 'Langue' },
-    hi: { home: 'ClawPurse', gateway: 'गेटवे', drip: 'ड्रिप फॉसेट', get: 'NTMPI प्राप्त करें', ledger: 'खाता बही', lang_label: 'भाषा' },
-    zh: { home: 'ClawPurse', gateway: '网关', drip: '水龙头', get: '获取NTMPI', ledger: '账本', lang_label: '语言' },
-    id: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Keran Drip', get: 'Dapatkan NTMPI', ledger: 'Buku Besar', lang_label: 'Bahasa' },
+  var T = {
+    en: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Drip Faucet', get: 'Get NTMPI', ledger: 'Ledger', nodewatch: 'NodeWatch', lang_label: 'Language' },
+    ja: { home: 'ClawPurse', gateway: 'ゲートウェイ', drip: 'ドリップ蛇口', get: 'NTMPI取得', ledger: '台帳', nodewatch: 'NodeWatch', lang_label: '言語' },
+    ko: { home: 'ClawPurse', gateway: '게이트웨이', drip: '드립 수도꼭지', get: 'NTMPI 받기', ledger: '원장', nodewatch: 'NodeWatch', lang_label: '언어' },
+    es: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Grifo Drip', get: 'Obtener NTMPI', ledger: 'Libro Mayor', nodewatch: 'NodeWatch', lang_label: 'Idioma' },
+    fr: { home: 'ClawPurse', gateway: 'Passerelle', drip: 'Robinet Drip', get: 'Obtenir NTMPI', ledger: 'Registre', nodewatch: 'NodeWatch', lang_label: 'Langue' },
+    hi: { home: 'ClawPurse', gateway: 'गेटवे', drip: 'ड्रिप फॉसेट', get: 'NTMPI प्राप्त करें', ledger: 'खाता बही', nodewatch: 'NodeWatch', lang_label: 'भाषा' },
+    zh: { home: 'ClawPurse', gateway: '网关', drip: '水龙头', get: '获取NTMPI', ledger: '账本', nodewatch: '节点监控', lang_label: '语言' },
+    id: { home: 'ClawPurse', gateway: 'Gateway', drip: 'Keran Drip', get: 'Dapatkan NTMPI', ledger: 'Buku Besar', nodewatch: 'NodeWatch', lang_label: 'Bahasa' },
   };
 
-  // Detect language: <html lang="xx"> → URL path /xx/ → default en
   function detectLang() {
     var htmlLang = (document.documentElement.lang || '').slice(0, 2).toLowerCase();
     if (LANGS.indexOf(htmlLang) !== -1) return htmlLang;
@@ -39,7 +39,6 @@
     return 'en';
   }
 
-  // Detect which site we're on
   function detectSite() {
     var host = window.location.hostname;
     for (var i = 0; i < SITES.length; i++) {
@@ -48,21 +47,11 @@
     return '';
   }
 
-  // Build language-aware URL for a site
   function siteUrl(site, lang) {
-    // Home site uses /lang/ subdirs
-    // All sites use /lang/ subdirs
     return site.url + '/' + lang + '/';
   }
 
-  // Build language switcher URLs (stay on current site, change lang)
   function langSwitchUrl(lang) {
-    var currentSite = null;
-    var host = window.location.hostname;
-    for (var i = 0; i < SITES.length; i++) {
-      if (host.indexOf(SITES[i].pathMatch) !== -1) { currentSite = SITES[i]; break; }
-    }
-    if (!currentSite) return '/' + lang + '/';
     return '/' + lang + '/';
   }
 
@@ -70,7 +59,6 @@
   var currentSite = detectSite();
   var t = T[lang] || T.en;
 
-  // --- Inject CSS ---
   var style = document.createElement('style');
   style.textContent = [
     '.cpnav{position:sticky;top:0;z-index:9999;background:rgba(12,14,19,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid #1e2230;padding:0 24px;font-family:"Outfit",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}',
@@ -91,21 +79,18 @@
   ].join('\n');
   document.head.appendChild(style);
 
-  // --- Build HTML ---
   var nav = document.createElement('nav');
   nav.className = 'cpnav';
 
   var inner = document.createElement('div');
   inner.className = 'cpnav-inner';
 
-  // Logo
   var logo = document.createElement('a');
   logo.href = siteUrl(SITES[0], lang);
   logo.className = 'cpnav-logo';
   logo.innerHTML = '<span class="cpnav-bolt">\u26A1</span> ' + t.home;
   inner.appendChild(logo);
 
-  // Links container
   var links = document.createElement('div');
   links.className = 'cpnav-links';
 
@@ -117,7 +102,6 @@
     links.appendChild(a);
   });
 
-  // Language switcher
   var langWrap = document.createElement('div');
   langWrap.className = 'cpnav-lang';
   var sel = document.createElement('select');
@@ -138,16 +122,13 @@
   inner.appendChild(links);
   nav.appendChild(inner);
 
-  // --- Inject into page ---
-  // Insert as first child of body
   if (document.body.firstChild) {
     document.body.insertBefore(nav, document.body.firstChild);
   } else {
     document.body.appendChild(nav);
   }
 
-  // Load Outfit if not already present
-  if (!document.querySelector('link[href*="DM+Sans"]')) {
+  if (!document.querySelector('link[href*="Outfit"]')) {
     var fontLink = document.createElement('link');
     fontLink.rel = 'stylesheet';
     fontLink.href = 'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap';
